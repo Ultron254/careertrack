@@ -1,0 +1,119 @@
+.page {
+  padding: 24px 28px 60px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 27px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.markAll {
+  margin-left: auto;
+  padding: 9px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+.markAll:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.groupLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 22px 0 10px;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 15px 16px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+.row:hover {
+  border-color: var(--border-strong);
+}
+.row[data-unread='true'] {
+  background: rgba(var(--orange-rgb), 0.04);
+  border-color: rgba(var(--orange-rgb), 0.22);
+}
+.icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex: none;
+}
+.body {
+  flex: 1;
+  min-width: 0;
+}
+.rowTitle {
+  font-weight: 600;
+  font-size: 14px;
+}
+.rowText {
+  font-size: 13px;
+  color: var(--text-soft);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.time {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  display: block;
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--orange);
+  flex: none;
+  margin-top: 6px;
+}
+.empty {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  padding: 40px 0;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 4px 16px 32px;
+  }
+}
