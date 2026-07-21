@@ -1,0 +1,73 @@
+.menu {
+  width: 250px;
+  background: var(--surface);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-pop);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.identity {
+  min-width: 0;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.role {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.group {
+  padding: 6px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  text-align: left;
+  padding: 11px 12px;
+  border: none;
+  border-radius: 11px;
+  background: none;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.item:hover {
+  background: var(--surface-faint);
+}
+.item[data-danger='true'] {
+  color: var(--status-returned-fg);
+  font-weight: 600;
+}
+
+.itemIcon {
+  color: var(--text-soft);
+  display: flex;
+}
+.item[data-danger='true'] .itemIcon {
+  color: var(--status-returned-fg);
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 5px 8px;
+}

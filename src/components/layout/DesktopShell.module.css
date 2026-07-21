@@ -1,0 +1,57 @@
+.frame {
+  display: flex;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  background: var(--ink);
+  padding: 14px;
+  gap: 6px;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--canvas);
+  border-radius: var(--radius-panel);
+  overflow: hidden;
+  box-shadow: var(--shadow-panel);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.contentInner {
+  margin: 0 auto;
+  min-height: 100%;
+}
+
+/* Above 1600 the content column caps and centres rather than stretching. */
+@media (min-width: 1600px) {
+  .contentInner {
+    max-width: 1520px;
+  }
+}
+
+.tourButton {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 70;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 700;
+  font-size: 20px;
+  box-shadow: 0 12px 28px -8px rgba(var(--ink-rgb), 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,112 @@
+.sidebar {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 10px 14px;
+  transition: width var(--duration-sidebar) var(--ease-shell);
+  overflow: hidden;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 6px 6px 18px;
+}
+
+.brandMark {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: var(--radius-control);
+  background: rgba(var(--white-rgb), 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brandName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--surface);
+  white-space: nowrap;
+  transition: opacity var(--duration-sidebar) var(--ease-shell);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 11px;
+  border-radius: var(--radius-button);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  color: rgba(var(--white-rgb), 0.72);
+  font-weight: 500;
+  font-size: 14px;
+  transition: filter 0.15s ease;
+}
+
+.item:hover {
+  filter: brightness(1.15);
+}
+
+.itemActive {
+  background: rgba(var(--orange-rgb), 0.18);
+  color: var(--surface);
+  font-weight: 600;
+}
+
+.itemIcon {
+  width: 22px;
+  height: 22px;
+  color: rgba(var(--white-rgb), 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.itemActive .itemIcon {
+  color: var(--orange);
+}
+
+.itemLabel {
+  white-space: nowrap;
+  transition: opacity var(--duration-sidebar) var(--ease-shell);
+}
+
+.badge {
+  margin-left: auto;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--orange);
+  color: var(--surface);
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 14px;
+  overflow: hidden;
+  transition: opacity var(--duration-sidebar) var(--ease-shell);
+}
