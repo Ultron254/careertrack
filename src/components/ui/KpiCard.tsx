@@ -1,6 +1,6 @@
 import type { Kpi } from '@/api/schemas/dashboard';
-import { Card } from '@/components/ui/Card';
-import { accentColour, toneColour } from '@/components/ui/accent';
+import { Card } from './Card';
+import { accentColour, toneColour } from './accent';
 import styles from './KpiCard.module.css';
 
 export function KpiCard({ kpi }: { kpi: Kpi }) {

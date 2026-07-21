@@ -9,7 +9,7 @@ import { CategoryChip } from '@/components/ui/Badge';
 import { ErrorState } from '@/components/ui/States';
 import { accentColour } from '@/components/ui/accent';
 import type { GoalCategory } from '@/types/domain';
-import { KpiCard } from './KpiCard';
+import { KpiCard } from '@/components/ui/KpiCard';
 import { DashboardSkeleton } from './DashboardSkeleton';
 import styles from './Dashboard.module.css';
 
