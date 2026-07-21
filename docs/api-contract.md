@@ -211,6 +211,10 @@ Notification = Entity & { userId, kind: NotificationKind, title, body,
                           readAt: isoDateTime | null, link }
 ```
 
+### POST /api/notifications/:id/read
+Marks a single notification read. Returns `204 No Content`. Responds `404 not_found`
+when the id is unknown.
+
 ### POST /api/notifications/read-all
 Marks all of the current user's notifications read. Returns `204 No Content`.
 

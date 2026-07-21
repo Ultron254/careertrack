@@ -11,6 +11,15 @@ export function useNotifications() {
   });
 }
 
+export function useMarkNotificationRead() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (notificationId: string) =>
+      request(z.undefined(), endpoints.notifications.read(notificationId), { method: 'POST' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+  });
+}
+
 export function useMarkAllNotificationsRead() {
   const queryClient = useQueryClient();
   return useMutation({

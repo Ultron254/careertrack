@@ -1,15 +1,23 @@
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { useMarkAllNotificationsRead, useNotifications } from '@/api/queries/notifications';
+import {
+  useMarkAllNotificationsRead,
+  useMarkNotificationRead,
+  useNotifications,
+} from '@/api/queries/notifications';
 import { ErrorState } from '@/components/ui/States';
 import { ViewSkeleton } from '@/components/ui/Skeleton';
+import { SwipeRow } from '@/components/ui/SwipeRow';
+import { useOnlineStatus } from '@/components/layout/useOnlineStatus';
 import type { Notification } from '@/types/domain';
 import { notificationLook } from './notificationLook';
 import styles from './NotificationsScreen.module.css';
 
 export function NotificationsScreen() {
   const navigate = useNavigate();
+  const online = useOnlineStatus();
   const { data: notifications, isPending, isError, error, refetch } = useNotifications();
+  const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
 
   if (isPending) return <ViewSkeleton />;
@@ -26,9 +34,8 @@ export function NotificationsScreen() {
 
   const renderRow = (n: Notification) => {
     const look = notificationLook[n.kind];
-    return (
+    const row = (
       <button
-        key={n.id}
         type="button"
         className={styles.row}
         data-unread={!n.readAt}
@@ -46,6 +53,24 @@ export function NotificationsScreen() {
         </span>
         {!n.readAt && <span className={styles.dot} />}
       </button>
+    );
+
+    if (n.readAt) return <div key={n.id}>{row}</div>;
+
+    return (
+      <SwipeRow
+        key={n.id}
+        actions={[
+          {
+            label: 'Mark read',
+            icon: 'check',
+            onAction: () => markRead.mutate(n.id),
+            disabled: !online,
+          },
+        ]}
+      >
+        {row}
+      </SwipeRow>
     );
   };
 

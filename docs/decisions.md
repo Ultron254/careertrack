@@ -40,6 +40,6 @@ The employee profile's rating action reuses the appraisal endpoints for the subj
 
 ## Deferred items
 
-- Swipe to reveal actions on mobile list rows and the pull to refresh gesture are not implemented. The offline banner, bottom sheet, splash, and full screen mobile sub views are in place. Swipe gestures were deferred to avoid shipping a fragile touch interaction; the underlying actions are all reachable through the standard controls.
+- Pull to refresh is not implemented. The offline banner, bottom sheet, splash, swipe to reveal actions on the notifications list, and full screen mobile sub views are in place. Pull to refresh was left out because TanStack Query already refetches on focus and on reconnect, so a manual gesture would duplicate behaviour that is reachable through the standard controls.
 - Report export is a stub. The endpoint is real and the UI shows the response state, but only PDF and Excel resolve; other formats return a deliberate 501 so the error path stays reachable.
 - The avatar picker sets a local colour preference only. Real photos arrive through `User.avatarUrl` from Microsoft Graph, at which point the picker becomes a photo upload.

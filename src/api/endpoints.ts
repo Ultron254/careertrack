@@ -72,6 +72,7 @@ export const endpoints = {
 
   notifications: {
     list: () => '/api/notifications',
+    read: (notificationId: string) => `/api/notifications/${notificationId}/read`,
     readAll: () => '/api/notifications/read-all',
   },
 
