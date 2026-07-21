@@ -1,0 +1,97 @@
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+}
+
+.spotlight {
+  position: absolute;
+  border-radius: 13px;
+  box-shadow: 0 0 0 9999px rgba(var(--ink-rgb), 0.62);
+  border: 2px solid var(--orange);
+  transition: all 0.28s var(--ease-shell);
+  pointer-events: none;
+}
+
+.tip {
+  position: absolute;
+  width: 300px;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow-panel);
+  transition: all 0.28s var(--ease-shell);
+}
+
+.tipHead {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 9px;
+}
+
+.tipIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--tint-people);
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.tipTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.tipBody {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-soft);
+  margin-bottom: 14px;
+}
+
+.tipFoot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.counter {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.skip {
+  margin-left: auto;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 6px;
+}
+
+.next {
+  padding: 9px 18px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spotlight,
+  .tip {
+    transition: none;
+  }
+}

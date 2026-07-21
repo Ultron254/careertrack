@@ -1,0 +1,151 @@
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  background: var(--surface);
+}
+
+.visual {
+  position: relative;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.skip {
+  position: absolute;
+  top: 32px;
+  right: 36px;
+  z-index: 2;
+  border: none;
+  cursor: pointer;
+  background: rgba(var(--white-rgb), 0.2);
+  color: var(--surface);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: var(--radius-pill);
+}
+
+.illustration {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 82%;
+  border-radius: 28px;
+  background-color: rgba(var(--white-rgb), 0.92);
+  background-size: 62% auto;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.panel {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px 72px;
+  overflow: hidden;
+}
+
+.content {
+  max-width: 440px;
+}
+
+.stepLabel {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--orange);
+  letter-spacing: 0.04em;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 15px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-alt);
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 14px;
+}
+
+.title {
+  font-size: 40px;
+  letter-spacing: -0.025em;
+  line-height: 1.06;
+  margin: 16px 0 14px;
+}
+
+.body {
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--text-soft);
+  margin-bottom: 36px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(var(--ink-rgb), 0.15);
+  transition: all 0.2s ease;
+}
+.dot[data-active='true'] {
+  width: 26px;
+  background: var(--orange);
+}
+
+.back {
+  margin-left: auto;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 14.5px;
+  padding: 10px;
+}
+
+.next {
+  padding: 14px 28px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 600;
+  font-size: 15.5px;
+}
+
+@media (max-width: 900px) {
+  .visual {
+    display: none;
+  }
+  .panel {
+    padding: 32px 24px;
+  }
+  .title {
+    font-size: 30px;
+  }
+  .body {
+    font-size: 15px;
+  }
+}

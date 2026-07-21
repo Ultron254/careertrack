@@ -1,0 +1,34 @@
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 210;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--grad-sunset);
+  color: var(--surface);
+}
+
+.mark {
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  background: rgba(var(--white-rgb), 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+}
+
+.tagline {
+  font-size: 14px;
+  opacity: 0.85;
+}

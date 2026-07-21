@@ -1,0 +1,26 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  padding: 40px 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.body {
+  font-size: 13.5px;
+  color: var(--text-soft);
+  max-width: 46ch;
+  line-height: 1.55;
+  margin-bottom: 6px;
+}

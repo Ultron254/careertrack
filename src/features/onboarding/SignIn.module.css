@@ -1,0 +1,157 @@
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  background: var(--surface);
+}
+
+.brandPanel {
+  position: relative;
+  width: 46%;
+  background: var(--grad-sunset);
+  padding: 56px 52px;
+  display: flex;
+  flex-direction: column;
+  color: var(--surface);
+  overflow: hidden;
+}
+
+.brandRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandMark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(var(--white-rgb), 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brandName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.pitch {
+  position: relative;
+  margin-top: 44px;
+}
+
+.pitchTitle {
+  font-size: 38px;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: var(--surface);
+}
+
+.pitchBody {
+  font-size: 16px;
+  opacity: 0.9;
+  margin-top: 14px;
+  max-width: 36ch;
+}
+
+.illustration {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  margin-top: 40px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+}
+
+.formPanel {
+  position: relative;
+  flex: 1;
+  padding: 52px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.form {
+  max-width: 360px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.welcome {
+  font-size: 34px;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.lede {
+  font-size: 15px;
+  color: var(--text-soft);
+  line-height: 1.5;
+  margin-bottom: 30px;
+}
+
+.msButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  border: none;
+  border-radius: 13px;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 600;
+  font-size: 15.5px;
+  cursor: pointer;
+}
+.msButton:hover {
+  background: var(--ink-soft);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background: var(--border-strong);
+}
+
+.dividerLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 15px;
+  border-radius: 12px;
+  background: rgba(var(--teal-rgb), 0.08);
+  color: var(--teal-deep);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .brandPanel {
+    display: none;
+  }
+  .formPanel {
+    padding: 32px 24px;
+  }
+}
