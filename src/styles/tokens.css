@@ -1,0 +1,108 @@
+/* Design tokens extracted from the CareerTrack design bundles.
+   Every colour in the app derives from this file. */
+
+:root {
+  /* Brand */
+  --ink: #141132;
+  --orange: #f26532;
+  --teal: #0493a1;
+  --blue: #1e517d;
+  --gold: #deb026;
+
+  /* Deep variants, used for gradient ends and badge foregrounds */
+  --teal-deep: #036e78;
+  --blue-deep: #163c5c;
+  --orange-deep: #c4471c;
+  --gold-deep: #a98615;
+  --ink-soft: #2a2160;
+  --plum: #c23a6b;
+
+  /* Surfaces */
+  --canvas: #ece8e1;
+  --canvas-mobile: #f4f1eb;
+  --canvas-deep: #ded9d0;
+  --surface: #ffffff;
+  --surface-alt: #f1efea;
+  --surface-faint: #fbfaf8;
+  --field: #f7f6f2;
+
+  /* Text */
+  --text-muted: #8a889c;
+  --text-soft: #5a5872;
+  --text-tinted: #3a3856;
+  --text-faint: #b0aebd;
+  --text-disabled: #c9c6d0;
+
+  /* Alpha bases for derived rgba() colours */
+  --ink-rgb: 20, 17, 50;
+  --white-rgb: 255, 255, 255;
+  --border: rgba(20, 17, 50, 0.07);
+  --border-strong: rgba(20, 17, 50, 0.12);
+
+  /* Goal categories */
+  --cat-client: var(--teal);
+  --cat-company: var(--blue);
+  --cat-people: var(--orange);
+  --cat-financial: var(--gold);
+  --tint-client: rgba(4, 147, 161, 0.12);
+  --tint-company: rgba(30, 81, 125, 0.12);
+  --tint-people: rgba(242, 101, 50, 0.12);
+  --tint-financial: rgba(222, 176, 38, 0.18);
+
+  /* Goal status badges, background and foreground pairs */
+  --status-approved-bg: rgba(4, 147, 161, 0.14);
+  --status-approved-fg: #036e78;
+  --status-submitted-bg: rgba(30, 81, 125, 0.14);
+  --status-submitted-fg: #1e517d;
+  --status-review-bg: rgba(222, 176, 38, 0.2);
+  --status-review-fg: #8a6d00;
+  --status-returned-bg: rgba(242, 101, 50, 0.15);
+  --status-returned-fg: #c2410c;
+  --status-neutral-bg: rgba(20, 17, 50, 0.06);
+  --status-neutral-fg: #5a5872;
+
+  /* Rating scale 1 to 4 */
+  --rating-1: var(--orange);
+  --rating-2: var(--gold);
+  --rating-3: var(--blue);
+  --rating-4: var(--teal);
+  --mint: #7ce0c6;
+
+  /* Category gradients */
+  --grad-client: linear-gradient(160deg, #0493a1, #036e78);
+  --grad-company: linear-gradient(160deg, #1e517d, #163c5c);
+  --grad-people: linear-gradient(160deg, #f26532, #c4471c);
+  --grad-financial: linear-gradient(160deg, #deb026, #a98615);
+  --grad-ink: linear-gradient(160deg, #141132, #2a2160);
+  --grad-panel: linear-gradient(100deg, #141132, #1e517d);
+  --grad-promo: linear-gradient(120deg, #ebe4fb, #e0f4f5);
+  --grad-sunset: radial-gradient(
+    130% 110% at 75% 15%,
+    #deb026 0%,
+    #f26532 32%,
+    #c23a6b 58%,
+    #2a2160 82%,
+    #141132 100%
+  );
+
+  /* Type */
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'Instrument Sans', system-ui, sans-serif;
+
+  /* Shape */
+  --radius-control: 11px;
+  --radius-button: 12px;
+  --radius-card: 20px;
+  --radius-panel: 24px;
+  --radius-pill: 100px;
+
+  /* Elevation */
+  --shadow-panel: 0 24px 60px -20px rgba(0, 0, 0, 0.5);
+  --shadow-pop: 0 30px 70px -25px rgba(20, 17, 50, 0.55);
+  --shadow-overlay: 0 40px 90px -30px rgba(20, 17, 50, 0.6);
+
+  /* Motion */
+  --ease-shell: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-view: 220ms;
+  --duration-sidebar: 260ms;
+}
