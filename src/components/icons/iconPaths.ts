@@ -23,6 +23,12 @@ export const iconPaths = {
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>',
   star: '<path d="M12 4l2.3 5.2 5.7.5-4.3 3.8 1.3 5.5L12 16.9 7 19.3l1.3-5.5L4 10l5.7-.5z"/>',
   bolt: '<path d="M13 3L4 14h6l-1 7 9-11h-6z"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  chevronLeft: '<path d="M15 5l-7 7 7 7"/>',
+  chevronRight: '<path d="M9 5l7 7-7 7"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/>',
 } as const;
 
 export type IconName = keyof typeof iconPaths;
