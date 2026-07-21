@@ -1,4 +1,7 @@
 import type { GoalCategory } from '@/types/domain';
+import { categoryOrder } from '@/components/ui/accent';
+
+export { categoryOrder };
 
 // Per category guidance shown in the wizard's step header and its side pane.
 // Copy is taken from the design with its en dashes rewritten.
@@ -9,8 +12,6 @@ interface CategoryCopy {
   paneTitle: string;
   tips: string[];
 }
-
-export const categoryOrder: GoalCategory[] = ['Client', 'Company', 'People', 'Financial'];
 
 export const categoryCopy: Record<GoalCategory, CategoryCopy> = {
   Client: {

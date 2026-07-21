@@ -12,6 +12,9 @@ export const accentColour: Record<Accent, string> = {
   ink: 'var(--ink)',
 };
 
+// The fixed display order of the four goal categories, shared across features.
+export const categoryOrder: GoalCategory[] = ['Client', 'Company', 'People', 'Financial'];
+
 export const categoryColour: Record<GoalCategory, string> = {
   Client: 'var(--cat-client)',
   Company: 'var(--cat-company)',
