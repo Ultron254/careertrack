@@ -37,6 +37,8 @@ The app starts fully self contained: a fixture user, the mock API, and the role 
 | `VITE_ENTRA_REDIRECT_URI` | Redirect URI registered on the app registration. |
 | `VITE_ENTRA_API_SCOPE` | Scope requested for the access token sent to the backend. |
 
+Three env files carry these: `.env.development` (local, mock everything), `.env.production` (the real backend and Entra), and `.env.demo` (the standalone Vercel demo that runs on mock data). The live demo builds with `npm run build:demo`, which loads `.env.demo`. To deploy against a real backend, change the `buildCommand` in `vercel.json` back to `npm run build` so it uses `.env.production`, and fill in the Entra values.
+
 ## Folder map
 
 | Path | Purpose |

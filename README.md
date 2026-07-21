@@ -29,6 +29,11 @@ Vite, React 18, TypeScript in strict mode, React Router 6, TanStack Query 5, Zod
 
 ## Deployment
 
-Deployed on Vercel. `vercel.json` provides the single page app rewrites so client routes resolve on refresh.
+Live demo: https://careertrack-ten.vercel.app
 
-Live URL: (add after the first deploy)
+Deployed on Vercel. `vercel.json` provides the single page app rewrites so client
+routes resolve on refresh. The demo builds with `npm run build:demo`, which loads
+`.env.demo` and runs the whole product on mock data with no backend and no Entra
+tenant, so every screen and role is reachable. To point the deployment at a real
+backend, switch the `buildCommand` in `vercel.json` back to `npm run build` and set
+the production environment variables described in `docs/handover.md`.
