@@ -1,6 +1,16 @@
 import { z } from 'zod';
 import type { ReviewDecision } from '@/types/domain';
-import { entityFields, isoDateTime } from './common';
+import { entityFields, goalStatusSchema, isoDateTime } from './common';
+
+// One row per direct report with a submission awaiting the manager.
+export const reviewQueueItemSchema = z.object({
+  userId: z.string(),
+  goalCount: z.number().int(),
+  status: goalStatusSchema,
+  overdue: z.boolean(),
+});
+export const reviewQueueSchema = z.array(reviewQueueItemSchema);
+export type ReviewQueueItem = z.infer<typeof reviewQueueItemSchema>;
 
 export const reviewDecisionSchema = z.object({
   ...entityFields,

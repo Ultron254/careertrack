@@ -7,6 +7,7 @@ export const notificationKindSchema = z.enum([
   'goal_approved',
   'feedback_requested',
   'meeting_reminder',
+  'system',
 ]);
 
 export const notificationSchema = z.object({

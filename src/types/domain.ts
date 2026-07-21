@@ -143,7 +143,8 @@ export type NotificationKind =
   | 'goal_returned'
   | 'goal_approved'
   | 'feedback_requested'
-  | 'meeting_reminder';
+  | 'meeting_reminder'
+  | 'system';
 
 export interface Notification extends Entity {
   userId: string;
