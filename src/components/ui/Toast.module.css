@@ -1,0 +1,28 @@
+.region {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--ink);
+  color: var(--surface);
+  padding: 11px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 500;
+  box-shadow: var(--shadow-pop);
+  animation: view-fade var(--duration-view) ease;
+  max-width: min(92vw, 480px);
+}
+
+.error {
+  background: var(--status-returned-fg);
+}

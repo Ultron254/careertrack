@@ -1,0 +1,21 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(var(--ink-rgb), 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.dialog {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-overlay);
+  width: 100%;
+  max-height: min(86vh, 720px);
+  overflow-y: auto;
+  animation: view-fade var(--duration-view) ease;
+}
