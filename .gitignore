@@ -1,0 +1,18 @@
+node_modules
+dist
+dist-ssr
+coverage
+
+.env.local
+.env.*.local
+
+.vscode
+.idea
+*.suo
+*.sln
+.DS_Store
+
+# Design bundles and their unpacked output. Re-extract with tools/unpack_designs.py.
+CareerTrack-WebApp.html
+CareerTrack-MobileApp.html
+design/
