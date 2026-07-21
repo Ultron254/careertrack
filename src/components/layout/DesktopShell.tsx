@@ -68,6 +68,7 @@ export function DesktopShell() {
         type="button"
         className={styles.tourButton}
         title="Take a tour"
+        aria-label="Take a tour"
         onClick={() => setTourRunning(true)}
       >
         ?
