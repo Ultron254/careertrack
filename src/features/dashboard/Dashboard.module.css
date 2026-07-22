@@ -107,13 +107,19 @@
 
 .charts {
   display: grid;
-  grid-template-columns: 1fr 1.3fr 1fr;
+  grid-template-columns: 1.25fr 1.4fr 1fr;
   gap: 14px;
   margin-bottom: 16px;
 }
 
 .chartCard {
   padding: 20px 22px;
+}
+
+.donutCard {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
 }
 
 .cardHead {
@@ -141,26 +147,41 @@
 .donutRow {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 22px;
+  flex: 1;
 }
 
 .legend {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 4px;
   flex: 1;
 }
 
 .legendRow {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
+  gap: 9px;
+  font-size: 12.5px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 10px;
+  background: none;
+  text-align: left;
+  color: inherit;
+  transition: background 140ms var(--ease-shell);
+}
+.legendRow[data-clickable] {
+  cursor: pointer;
+}
+.legendRow[data-clickable]:hover {
+  background: var(--surface-alt);
 }
 
 .swatch {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   border-radius: 3px;
   flex: none;
 }
@@ -172,6 +193,14 @@
 .legendValue {
   margin-left: auto;
   color: var(--text-muted);
+  font-weight: 600;
+}
+
+.legendChev {
+  color: var(--text-faint);
+  font-size: 16px;
+  line-height: 1;
+  margin-left: 2px;
 }
 
 .bars {
@@ -189,6 +218,23 @@
   align-items: center;
   gap: 9px;
   height: 100%;
+  border: none;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+}
+.barCol[data-clickable] {
+  cursor: pointer;
+}
+.barCol:hover .bar,
+.barCol:focus-visible .bar {
+  filter: brightness(1.06) saturate(1.05);
+}
+.barCol:hover .barTip,
+.barCol:focus-visible .barTip {
+  opacity: 1;
+  transform: translate(-50%, -4px);
 }
 
 .barTrack {
@@ -198,6 +244,25 @@
   flex: 1;
   border-radius: 9px;
   background: rgba(var(--ink-rgb), 0.04);
+  margin: 0 auto;
+}
+
+.barTip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, 2px);
+  z-index: 2;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms var(--ease-shell), transform 140ms var(--ease-shell);
 }
 
 .bar {
@@ -337,7 +402,23 @@
 }
 
 .sideRow {
-  margin-bottom: 13px;
+  display: block;
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 10px;
+  background: none;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  transition: background 140ms var(--ease-shell);
+}
+.sideRow[data-clickable] {
+  cursor: pointer;
+}
+.sideRow[data-clickable]:hover {
+  background: var(--surface-alt);
 }
 
 .sideRowHead {

@@ -143,6 +143,11 @@ function standardGoals(
 export const goals: Goal[] = [
   ...amara2026,
   ...amaraHistory,
+  // Line managers and people-team personas also self-appraise, so they get a
+  // full set of approved goals for the current cycle.
+  ...standardGoals('u-david', {}, 'Approved'),
+  ...standardGoals('u-wanjiru', {}, 'Approved'),
+  ...standardGoals('u-sam', {}, 'Approved'),
   ...standardGoals('u-sana', {}, 'Approved'),
   ...standardGoals('u-grace', {}, 'Approved'),
   ...standardGoals('u-kevin', { Client: 'Returned' }, 'Submitted'),

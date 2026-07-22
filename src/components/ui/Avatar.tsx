@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import { getAvatarOverride, subscribeAvatar } from '@/lib/avatarStore';
 import styles from './Avatar.module.css';
 
 // There are no staff photos in the repository. Real photos arrive through
@@ -29,7 +30,18 @@ interface AvatarProps {
 
 export function Avatar({ userId, name, avatarUrl = null, size = 38 }: AvatarProps) {
   const [failed, setFailed] = useState(false);
-  const showImage = avatarUrl && !failed;
+  // A real Graph photo (avatarUrl) always wins; otherwise fall back to a
+  // locally uploaded override so the signed-in user's photo shows everywhere.
+  const override = useSyncExternalStore(
+    subscribeAvatar,
+    () => getAvatarOverride(userId),
+    () => null,
+  );
+  const src = avatarUrl ?? override;
+  const showImage = src && !failed;
+
+  // Reset the error flag when the source changes so a new upload can retry.
+  useEffect(() => setFailed(false), [src]);
 
   return (
     <span
@@ -44,7 +56,7 @@ export function Avatar({ userId, name, avatarUrl = null, size = 38 }: AvatarProp
       aria-label={name}
     >
       {showImage ? (
-        <img src={avatarUrl} alt="" className={styles.image} onError={() => setFailed(true)} />
+        <img src={src} alt="" className={styles.image} onError={() => setFailed(true)} />
       ) : (
         initialsOf(name)
       )}

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
 import { request } from '@/api/client';
 import { endpoints } from '@/api/endpoints';
@@ -24,8 +25,12 @@ export interface YearGroup {
   goals: Goal[];
 }
 
+const isStatusFilter = (value: string | null): value is StatusFilter =>
+  value !== null && (statusFilters as string[]).includes(value);
+
 export function useMyGoals() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const cyclesQuery = useCycles();
   const cycles = useMemo(
     () => [...(cyclesQuery.data ?? [])].sort((a, b) => b.year - a.year),
@@ -40,7 +45,11 @@ export function useMyGoals() {
   });
 
   const [selectedYears, setSelectedYears] = useState<number[] | null>(null);
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('All');
+  // Honour a ?status= deep link from the dashboard, then let the chips take over.
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(() => {
+    const fromUrl = searchParams.get('status');
+    return isStatusFilter(fromUrl) ? fromUrl : 'All';
+  });
   const [query, setQuery] = useState('');
 
   const allYears = cycles.map((cycle) => cycle.year);

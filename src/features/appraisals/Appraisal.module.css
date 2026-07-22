@@ -321,6 +321,95 @@
   cursor: not-allowed;
 }
 
+.startCard {
+  padding: 40px 44px;
+  max-width: 640px;
+  margin: 8px auto 0;
+  text-align: center;
+}
+.startMark {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  color: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
+.startTitle {
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+}
+.startBody {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-soft);
+  margin: 0 0 18px;
+}
+.startSteps {
+  text-align: left;
+  margin: 0 auto 24px;
+  max-width: 42ch;
+  padding-left: 20px;
+  color: var(--text-tinted);
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+
+.wizardCard {
+  padding: 28px 30px;
+  border-left: 4px solid var(--teal);
+}
+.wizardMeta {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 12px;
+}
+.wizardTitle {
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  margin: 14px 0 8px;
+}
+.wizardHint {
+  font-size: 14.5px;
+  color: var(--text-soft);
+  margin: 0 0 18px;
+}
+.wizardScale {
+  max-width: 420px;
+  margin-bottom: 18px;
+}
+.wizardLabels {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+.wizardNav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.wizardNav .draftButton {
+  margin-left: 0;
+}
+.wizardNav .submitButton {
+  margin-left: auto;
+}
+
 .doneCard {
   padding: 44px;
   text-align: center;

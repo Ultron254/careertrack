@@ -57,27 +57,58 @@ export function Dashboard() {
 
       <div className={styles.kpis}>
         {kpis.map((kpi) => (
-          <KpiCard key={kpi.label} kpi={kpi} />
+          <KpiCard
+            key={kpi.label}
+            kpi={kpi}
+            hint={kpi.hint}
+            onClick={kpi.target ? () => navigate(kpi.target!) : undefined}
+          />
         ))}
       </div>
 
       <div className={styles.charts}>
-        <Card className={styles.chartCard}>
+        <Card className={styles.donutCard}>
           <h3 className={styles.cardTitle}>{statusDonut.title}</h3>
           <div className={styles.donutRow}>
             <DonutChart
-              segments={statusDonut.segments}
+              size={148}
+              segments={statusDonut.segments.map((segment) => ({
+                share: segment.share,
+                accent: segment.accent,
+                label: segment.label,
+                detail: segment.detail,
+              }))}
               centerValue={topStatus ? `${topStatus.share}%` : undefined}
               centerLabel={topStatus?.label}
+              onSegmentClick={
+                statusDonut.segments.some((s) => s.target)
+                  ? (index) => {
+                      const target = statusDonut.segments[index]?.target;
+                      if (target) navigate(target);
+                    }
+                  : undefined
+              }
             />
             <div className={styles.legend}>
-              {statusDonut.segments.map((segment) => (
-                <div key={segment.label} className={styles.legendRow}>
-                  <span className={styles.swatch} style={{ background: accentColour[segment.accent] }} />
-                  <span className={styles.legendLabel}>{segment.label}</span>
-                  <span className={styles.legendValue}>{segment.share}%</span>
-                </div>
-              ))}
+              {statusDonut.segments.map((segment) => {
+                const clickable = !!segment.target;
+                return (
+                  <button
+                    key={segment.label}
+                    type="button"
+                    className={styles.legendRow}
+                    data-clickable={clickable || undefined}
+                    title={segment.detail}
+                    onClick={clickable ? () => navigate(segment.target!) : undefined}
+                    disabled={!clickable}
+                  >
+                    <span className={styles.swatch} style={{ background: accentColour[segment.accent] }} />
+                    <span className={styles.legendLabel}>{segment.label}</span>
+                    <span className={styles.legendValue}>{segment.share}%</span>
+                    {clickable && <span className={styles.legendChev} aria-hidden>›</span>}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </Card>
@@ -87,7 +118,7 @@ export function Dashboard() {
             <h3 className={styles.cardTitle}>{trend.title}</h3>
             <span className={styles.cardMeta}>{trend.sub}</span>
           </div>
-          <TrendChart points={trend.points} labels={trend.labels} />
+          <TrendChart points={trend.points} labels={trend.labels} showValues />
         </Card>
 
         <Card className={styles.chartCard}>
@@ -95,9 +126,18 @@ export function Dashboard() {
           <div className={styles.bars}>
             {categoryBars.bars.map((bar) => {
               const height = Math.max(6, bar.heightPct);
+              const clickable = !!bar.target;
               return (
-                <div key={bar.label} className={styles.barCol}>
+                <button
+                  key={bar.label}
+                  type="button"
+                  className={styles.barCol}
+                  data-clickable={clickable || undefined}
+                  onClick={clickable ? () => navigate(bar.target!) : undefined}
+                  disabled={!clickable}
+                >
                   <div className={styles.barTrack}>
+                    {bar.detail && <span className={styles.barTip}>{bar.detail}</span>}
                     <div
                       className={styles.bar}
                       style={{ height: `${height}%`, background: accentGradient[bar.accent] }}
@@ -110,7 +150,7 @@ export function Dashboard() {
                     </span>
                   </div>
                   <span className={styles.barLabel}>{bar.label}</span>
-                </div>
+                </button>
               );
             })}
           </div>
@@ -152,17 +192,27 @@ export function Dashboard() {
           </div>
           <Card className={styles.sideCard}>
             <h3 className={styles.cardTitle}>{side.title}</h3>
-            {side.rows.map((row) => (
-              <div key={row.label} className={styles.sideRow}>
-                <div className={styles.sideRowHead}>
-                  <span className={styles.sideLabel}>{row.label}</span>
-                  <span className={styles.sideCount}>{row.count}</span>
-                </div>
-                <div className={styles.track}>
-                  <div className={styles.fill} style={{ width: `${row.pct}%`, background: accentColour[row.accent] }} />
-                </div>
-              </div>
-            ))}
+            {side.rows.map((row) => {
+              const clickable = !!row.target;
+              return (
+                <button
+                  key={row.label}
+                  type="button"
+                  className={styles.sideRow}
+                  data-clickable={clickable || undefined}
+                  onClick={clickable ? () => navigate(row.target!) : undefined}
+                  disabled={!clickable}
+                >
+                  <div className={styles.sideRowHead}>
+                    <span className={styles.sideLabel}>{row.label}</span>
+                    <span className={styles.sideCount}>{row.count}</span>
+                  </div>
+                  <div className={styles.track}>
+                    <div className={styles.fill} style={{ width: `${row.pct}%`, background: accentColour[row.accent] }} />
+                  </div>
+                </button>
+              );
+            })}
           </Card>
         </div>
       </div>

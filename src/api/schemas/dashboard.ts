@@ -18,6 +18,10 @@ export const kpiSchema = z.object({
   deltaTone: toneSchema,
   sub: z.string(),
   accent: accentSchema,
+  // Optional extras used by the dashboard/reports: a one line explanation shown
+  // on hover, and a route the card drills into when clicked.
+  hint: z.string().optional(),
+  target: z.string().optional(),
 });
 export type Kpi = z.infer<typeof kpiSchema>;
 
@@ -25,6 +29,9 @@ export const donutSegmentSchema = z.object({
   label: z.string(),
   share: z.number().min(0).max(100),
   accent: accentSchema,
+  // Optional hover detail (e.g. "2 goals") and a route to drill into.
+  detail: z.string().optional(),
+  target: z.string().optional(),
 });
 export type DonutSegment = z.infer<typeof donutSegmentSchema>;
 
@@ -41,6 +48,9 @@ export const categoryBarSchema = z.object({
   valueLabel: z.string(),
   heightPct: z.number().min(0).max(100),
   accent: accentSchema,
+  // Optional hover detail and a route to drill into.
+  detail: z.string().optional(),
+  target: z.string().optional(),
 });
 
 export const dashboardSchema = z.object({
@@ -81,6 +91,7 @@ export const dashboardSchema = z.object({
         count: z.string(),
         pct: z.number().min(0).max(100),
         accent: accentSchema,
+        target: z.string().optional(),
       }),
     ),
   }),

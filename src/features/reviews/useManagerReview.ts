@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useBulkReview, useReviewQueue } from '@/api/queries/reviews';
 import { useCycles, useGoals } from '@/api/queries/goals';
 import { useDepartments, useUsers } from '@/api/queries/org';
@@ -7,6 +8,8 @@ import { useToast } from '@/components/ui/Toast';
 import type { User } from '@/types/domain';
 
 export type ReviewOutcome = 'pending' | 'approved' | 'returned';
+
+const knownStatuses = ['Draft', 'Submitted', 'Under Review', 'Approved', 'Returned'];
 
 export interface QueueRow {
   userId: string;
@@ -19,6 +22,7 @@ export interface QueueRow {
 
 export function useManagerReview() {
   const toast = useToast();
+  const [searchParams] = useSearchParams();
   const queueQuery = useReviewQueue();
   const usersQuery = useUsers();
   const departmentsQuery = useDepartments();
@@ -38,7 +42,7 @@ export function useManagerReview() {
   const departmentName = (departmentId: string | null) =>
     (departmentsQuery.data ?? []).find((d) => d.id === departmentId)?.name ?? '';
 
-  const rows: QueueRow[] = (queueQuery.data ?? []).map((item) => {
+  const allRows: QueueRow[] = (queueQuery.data ?? []).map((item) => {
     const user = usersById.get(item.userId);
     return {
       userId: item.userId,
@@ -49,6 +53,20 @@ export function useManagerReview() {
       overdue: item.overdue,
     };
   });
+
+  const statusOptions = useMemo(
+    () => ['All', ...Array.from(new Set(allRows.map((row) => row.status)))],
+    [allRows],
+  );
+
+  // Honour a ?status= deep link from the dashboard, then let the chips take over.
+  const [statusFilter, setStatusFilter] = useState<string>(() => {
+    const fromUrl = searchParams.get('status');
+    return fromUrl && knownStatuses.includes(fromUrl) ? fromUrl : 'All';
+  });
+
+  const rows =
+    statusFilter === 'All' ? allRows : allRows.filter((row) => row.status === statusFilter);
 
   const [activeUserId, setActiveUserId] = useState<string | null>(null);
   const resolvedActiveId = activeUserId ?? rows[0]?.userId ?? null;
@@ -127,6 +145,9 @@ export function useManagerReview() {
       usersQuery.refetch();
     },
     rows,
+    statusOptions,
+    statusFilter,
+    setStatusFilter,
     activeRow,
     activeUserId: resolvedActiveId,
     openReview,

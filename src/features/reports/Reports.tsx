@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DonutChart } from '@/components/charts/DonutChart';
 import { TrendChart } from '@/components/charts/TrendChart';
 import { KpiCard } from '@/components/ui/KpiCard';
@@ -6,10 +7,29 @@ import { Avatar } from '@/components/ui/Avatar';
 import { Icon } from '@/components/icons/Icon';
 import { ErrorState } from '@/components/ui/States';
 import { ViewSkeleton } from '@/components/ui/Skeleton';
+import { useAuth } from '@/auth/authProvider';
+import { routeAccess } from '@/auth/roles';
 import { accentColour, toneColour } from '@/components/ui/accent';
 import { ReportsInsights } from './ReportsInsights';
 import { exportFormats, savedViews, useReports } from './useReports';
 import styles from './Reports.module.css';
+
+// Send a KPI card to the most relevant screen the current role can reach.
+function kpiTarget(label: string, role: string): string | undefined {
+  const l = label.toLowerCase();
+  const has = (path: string) => routeAccess[role as keyof typeof routeAccess]?.includes(path);
+  if (l.includes('appraisal') && has('/appraisals')) return '/appraisals';
+  if (l.includes('approved') && has('/reviews')) return '/reviews?status=Approved';
+  if (l.includes('return') && has('/reviews')) return '/reviews?status=Returned';
+  if ((l.includes('review') || l.includes('sla') || l.includes('rating')) && has('/reviews'))
+    return '/reviews';
+  if (l.includes('feedback') && has('/feedback')) return '/feedback';
+  if ((l.includes('goal') || l.includes('weight')) && has('/goals')) return '/goals';
+  if (l.includes('rating') && has('/appraisals')) return '/appraisals';
+  if (has('/people')) return '/people';
+  if (has('/goals')) return '/goals';
+  return undefined;
+}
 
 const exportTagColour: Record<string, string> = {
   PDF: 'var(--orange)',
@@ -22,6 +42,8 @@ const freqOptions = ['daily', 'weekly', 'monthly'] as const;
 
 export function Reports() {
   const r = useReports();
+  const navigate = useNavigate();
+  const { role } = useAuth();
   const [exportOpen, setExportOpen] = useState(false);
   const [scheduleOpen, setScheduleOpen] = useState(false);
 
@@ -162,9 +184,17 @@ export function Reports() {
       )}
 
       <div className={styles.kpiRow}>
-        {report.kpis.map((kpi) => (
-          <KpiCard key={kpi.label} kpi={kpi} />
-        ))}
+        {report.kpis.map((kpi) => {
+          const target = kpi.target ?? kpiTarget(kpi.label, role);
+          return (
+            <KpiCard
+              key={kpi.label}
+              kpi={kpi}
+              hint={kpi.hint ?? `Open ${kpi.label.toLowerCase()} for the full view`}
+              onClick={target ? () => navigate(target) : undefined}
+            />
+          );
+        })}
       </div>
 
       <ReportsInsights insights={report.insights} />
@@ -177,7 +207,11 @@ export function Reports() {
           </div>
           <div className={styles.bars}>
             {report.categoryBars.bars.map((bar) => (
-              <div key={bar.label} className={styles.barCol}>
+              <div
+                key={bar.label}
+                className={styles.barCol}
+                title={`${bar.label}: ${bar.valueLabel}`}
+              >
                 <span className={styles.barValue} style={{ color: accentColour[bar.accent] }}>
                   {bar.valueLabel}
                 </span>
@@ -223,7 +257,7 @@ export function Reports() {
           <div className={styles.panelSub} style={{ margin: '0 0 20px' }}>
             {report.trend.sub}
           </div>
-          <TrendChart points={report.trend.points} labels={report.trend.labels} />
+          <TrendChart points={report.trend.points} labels={report.trend.labels} showValues />
         </div>
 
         <div className={`card ${styles.panel}`}>

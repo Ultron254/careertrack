@@ -17,7 +17,26 @@ export function ReviewQueue({ review }: { review: ReturnType<typeof useManagerRe
         </button>
       </div>
 
+      {review.statusOptions.length > 1 && (
+        <div className={styles.filterRow}>
+          {review.statusOptions.map((status) => (
+            <button
+              key={status}
+              type="button"
+              className={styles.filterChip}
+              data-on={review.statusFilter === status}
+              onClick={() => review.setStatusFilter(status)}
+            >
+              {status}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className={styles.rows}>
+        {review.rows.length === 0 && (
+          <div className={styles.emptyRow}>No team members with that status.</div>
+        )}
         {review.rows.map((row) => {
           const selected = !!review.selected[row.userId];
           const active = review.activeUserId === row.userId;
