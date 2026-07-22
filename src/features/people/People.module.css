@@ -135,12 +135,13 @@
   border-radius: var(--radius-panel);
   overflow: hidden;
   margin-bottom: 16px;
-  background: var(--grad-panel);
+  background-color: #141132;
   color: var(--surface);
   padding: 28px 30px;
 }
 .coverRow {
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 18px;

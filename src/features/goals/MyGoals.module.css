@@ -134,6 +134,7 @@
 
 .yearBannerInner {
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 14px;

@@ -84,8 +84,9 @@
 .cover {
   position: relative;
   height: 140px;
-  background: var(--grad-panel);
+  background-color: #141132;
   border-radius: var(--radius-card) var(--radius-card) 0 0;
+  overflow: hidden;
 }
 .identity {
   padding: 0 30px 26px;

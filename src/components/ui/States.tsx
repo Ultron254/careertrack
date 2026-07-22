@@ -33,7 +33,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className={styles.block}>
+    <div className={`oxy-wash-soft ${styles.block}`}>
       <div className={styles.title}>{title}</div>
       <p className={styles.body}>{body}</p>
       {action}

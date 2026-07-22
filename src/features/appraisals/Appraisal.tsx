@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@/components/icons/Icon';
+import { BrandWatermark } from '@/components/ui/BrandWatermark';
 import { ErrorState, EmptyState } from '@/components/ui/States';
 import { ViewSkeleton } from '@/components/ui/Skeleton';
 import { categoryColour, categoryTint, ratingColour, ratingLabels } from '@/components/ui/accent';
@@ -63,21 +64,24 @@ export function Appraisal() {
 
   return (
     <div className={`view ${styles.page}`}>
-      <div className={`grain ${styles.banner}`}>
-        <div className={styles.bannerKicker}>Year end appraisal, {a.cycle.year}</div>
-        <h1 className={styles.bannerTitle}>Reflect on your year</h1>
-        <p className={styles.bannerSub}>
-          Rate yourself against each approved goal on a 1 to 4 scale. Your line manager rates next,
-          then you align on a final rating together.
-        </p>
-        <div className={styles.key}>
-          {scale.map((n) => (
-            <span key={n} className={styles.keyChip}>
-              <span className={styles.keyNum}>{n}</span>
-              {ratingLabels[n]}
-            </span>
-          ))}
+      <div className={`oxy-plate oxy-wash grain ${styles.banner}`}>
+        <div className={styles.bannerBody}>
+          <div className={styles.bannerKicker}>Year end appraisal, {a.cycle.year}</div>
+          <h1 className={styles.bannerTitle}>Reflect on your year</h1>
+          <p className={styles.bannerSub}>
+            Rate yourself against each approved goal on a 1 to 4 scale. Your line manager rates next,
+            then you align on a final rating together.
+          </p>
+          <div className={styles.key}>
+            {scale.map((n) => (
+              <span key={n} className={styles.keyChip}>
+                <span className={styles.keyNum}>{n}</span>
+                {ratingLabels[n]}
+              </span>
+            ))}
+          </div>
         </div>
+        <BrandWatermark />
       </div>
 
       <div className={`card ${styles.stepper}`}>

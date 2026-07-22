@@ -71,6 +71,7 @@
 
 .illustration {
   position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 560px;
   height: 76%;
@@ -115,6 +116,8 @@
 }
 
 .content {
+  position: relative;
+  z-index: 1;
   max-width: 440px;
 }
 

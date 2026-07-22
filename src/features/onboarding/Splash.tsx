@@ -4,7 +4,7 @@ import styles from './Splash.module.css';
 // Shown briefly on mobile while auth resolves, before onboarding or the app.
 export function Splash() {
   return (
-    <div className={`${styles.splash} grain`}>
+    <div className={`${styles.splash} oxy-plate-warm oxy-wash grain`}>
       <div className={styles.center}>
         <div className={styles.mark}>
           <LogoMark size={40} />

@@ -8,10 +8,14 @@
   position: relative;
   border-radius: 22px;
   overflow: hidden;
-  background: linear-gradient(120deg, var(--ink) 0%, var(--blue) 60%, var(--teal) 100%);
+  background-color: #141132;
   color: var(--surface);
   margin-bottom: 16px;
   padding: 28px 32px;
+}
+.bannerBody {
+  position: relative;
+  z-index: 1;
 }
 .bannerKicker {
   font-size: 12px;

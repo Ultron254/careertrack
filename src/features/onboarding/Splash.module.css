@@ -6,11 +6,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--grad-sunset);
+  background-color: #141132;
   color: var(--surface);
+  overflow: hidden;
 }
 
 .center {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,6 +46,7 @@
 
 .brandFooter {
   position: absolute;
+  z-index: 1;
   bottom: 40px;
   display: flex;
   align-items: center;

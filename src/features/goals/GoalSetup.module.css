@@ -13,6 +13,7 @@
 
 .bannerInner {
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -605,6 +606,7 @@
 
 .paneKicker {
   position: relative;
+  z-index: 1;
   font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -614,6 +616,7 @@
 
 .paneTitle {
   position: relative;
+  z-index: 1;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 26px;
@@ -644,6 +647,7 @@
 
 .paneArt {
   position: relative;
+  z-index: 1;
   margin-top: auto;
   height: 210px;
   border-radius: 16px 16px 0 0;

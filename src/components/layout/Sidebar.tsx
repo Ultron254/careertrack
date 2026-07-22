@@ -23,8 +23,9 @@ export function Sidebar({ collapsed, pendingReviews }: SidebarProps) {
         <span className={styles.brandMark}>
           <LogoMark size={20} />
         </span>
-        <span className={styles.brandName} style={labelStyle}>
-          CareerTrack
+        <span className={styles.brandText} style={labelStyle}>
+          <span className={styles.brandName}>CareerTrack</span>
+          <span className={styles.brandSub}>by Oxygene</span>
         </span>
       </div>
       <div className={clsx(styles.nav, 'scroll')}>

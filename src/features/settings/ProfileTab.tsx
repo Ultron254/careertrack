@@ -74,7 +74,7 @@ export function ProfileTab({ user }: { user: User }) {
   return (
     <>
       <div className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: 16 }}>
-        <div className={`grain ${styles.cover}`} />
+        <div className={`oxy-plate oxy-wash grain ${styles.cover}`} />
         <div className={styles.identity}>
           <div className={styles.identityAvatar}>
             <Avatar userId={user.id} name={user.name} avatarUrl={user.avatarUrl} size={96} />

@@ -21,7 +21,7 @@ export function YearGoalGroup({ group }: { group: YearGroup }) {
 
   return (
     <div className={styles.yearBlock}>
-      <div className={`grain ${styles.yearBanner}`}>
+      <div className={`oxy-wash grain ${styles.yearBanner}`}>
         <div className={styles.yearBannerInner}>
           <span className={styles.yearNum}>{group.year}</span>
           <span className={styles.yearSummary}>{summary}</span>

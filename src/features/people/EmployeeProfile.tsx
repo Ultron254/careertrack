@@ -34,7 +34,7 @@ export function EmployeeProfile() {
         Back to People
       </button>
 
-      <div className={`grain ${styles.cover}`}>
+      <div className={`oxy-plate oxy-wash grain ${styles.cover}`}>
         <div className={styles.coverRow}>
           <Avatar
             userId={user.id}

@@ -9,7 +9,7 @@
 .brandPanel {
   position: relative;
   width: 46%;
-  background: var(--grad-sunset);
+  background-color: #141132;
   padding: 56px 52px;
   display: flex;
   flex-direction: column;
@@ -19,6 +19,7 @@
 
 .brandRow {
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -53,6 +54,7 @@
 
 .brandFootnote {
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -64,6 +66,7 @@
 
 .pitch {
   position: relative;
+  z-index: 1;
   margin-top: 44px;
 }
 
@@ -83,6 +86,7 @@
 
 .illustration {
   position: relative;
+  z-index: 1;
   flex: 1;
   min-height: 0;
   margin-top: 40px;
@@ -102,6 +106,8 @@
 }
 
 .form {
+  position: relative;
+  z-index: 1;
   max-width: 360px;
   margin: 0 auto;
   width: 100%;

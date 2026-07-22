@@ -134,7 +134,7 @@ export function GoalSetup() {
 
   return (
     <div className={`view ${styles.page}`}>
-      <div className={`grain ${styles.banner}`} style={{ background: banner.gradient }}>
+      <div className={`oxy-wash grain ${styles.banner}`} style={{ background: banner.gradient }}>
         <div className={styles.bannerInner}>
           <div className={styles.bannerText}>
             <div className={styles.bannerKicker}>{banner.kicker}</div>
@@ -198,7 +198,7 @@ export function GoalSetup() {
           </div>
         </div>
 
-        <div className={`grain ${styles.pane}`} style={{ background: pane.gradient }}>
+        <div className={`oxy-wash grain ${styles.pane}`} style={{ background: pane.gradient }}>
           <div className={styles.paneKicker}>{pane.kicker}</div>
           <div className={styles.paneTitle}>{pane.title}</div>
           <div className={styles.paneTips}>

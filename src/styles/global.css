@@ -150,6 +150,53 @@ a:focus-visible,
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* Oxygene creative doodle wash from the design packs. Uses ::before so it
+   stacks under content and beside .grain (::after). Host needs
+   position: relative and overflow: hidden. Keep content at z-index >= 1. */
+.oxy-wash::before,
+.oxy-wash-soft::before,
+.oxy-wash-light::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: url('/brand/doodle.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Dark banners / brand panels — matches the design HTML (~13%, luminosity). */
+.oxy-wash::before {
+  opacity: 0.13;
+  mix-blend-mode: luminosity;
+}
+
+/* Very faint wash for sign-in form panels and empty states. */
+.oxy-wash-soft::before {
+  opacity: 0.05;
+  mix-blend-mode: luminosity;
+}
+
+/* Light promo cards and pastel surfaces. */
+.oxy-wash-light::before {
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+}
+
+/* Photo plates that sit under the doodle + scrim on hero banners. */
+.oxy-plate {
+  background-image: url('/brand/plate-cool.jpg');
+  background-size: cover;
+  background-position: center;
+}
+.oxy-plate-warm {
+  background-image: url('/brand/plate-warm.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
 .scroll {
   overflow-y: auto;
 }

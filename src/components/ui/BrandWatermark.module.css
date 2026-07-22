@@ -1,0 +1,35 @@
+.mark {
+  position: absolute;
+  right: 22px;
+  bottom: 18px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  pointer-events: none;
+  opacity: 0.42;
+  letter-spacing: 0.04em;
+}
+.mark[data-tone='light'] {
+  opacity: 0.28;
+}
+
+.word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  color: inherit;
+}
+.mark[data-tone='dark'] .word {
+  color: var(--surface);
+}
+.mark[data-tone='light'] .word {
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .mark {
+    right: 14px;
+    bottom: 12px;
+  }
+}

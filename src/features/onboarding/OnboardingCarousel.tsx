@@ -53,7 +53,7 @@ export function OnboardingCarousel({ onDone }: { onDone: () => void }) {
 
   return (
     <div className={styles.gate}>
-      <div className={`${styles.visual} grain`} style={{ background: step.gradient }}>
+      <div className={`${styles.visual} oxy-wash grain`} style={{ background: step.gradient }}>
         <div className={styles.brandLockup}>
           <span className={styles.brandMark}>
             <LogoMark size={18} monochrome />
@@ -72,7 +72,7 @@ export function OnboardingCarousel({ onDone }: { onDone: () => void }) {
         />
         <div className={styles.visualCaption}>{step.tag}</div>
       </div>
-      <div className={styles.panel}>
+      <div className={`${styles.panel} oxy-wash-soft`}>
         <div className={styles.content}>
           <div className={styles.stepLabel}>
             Step {index + 1} of {steps.length}

@@ -10,6 +10,7 @@ import { CategoryChip } from '@/components/ui/Badge';
 import { ErrorState } from '@/components/ui/States';
 import { accentColour, accentGradient } from '@/components/ui/accent';
 import type { GoalCategory } from '@/types/domain';
+import { BrandWatermark } from '@/components/ui/BrandWatermark';
 import { KpiCard } from '@/components/ui/KpiCard';
 import { DashboardSkeleton } from './DashboardSkeleton';
 import styles from './Dashboard.module.css';
@@ -33,7 +34,7 @@ export function Dashboard() {
 
   return (
     <div className={`${styles.page} view`}>
-      <section className={`${styles.banner} grain`}>
+      <section className={`${styles.banner} oxy-plate oxy-wash grain`}>
         <div className={styles.bannerScrim} />
         <div className={styles.bannerInner}>
           <div className={styles.bannerText}>
@@ -53,6 +54,7 @@ export function Dashboard() {
             </button>
           </div>
         </div>
+        <BrandWatermark />
       </section>
 
       <div className={styles.kpis}>
@@ -181,7 +183,7 @@ export function Dashboard() {
         </Card>
 
         <div className={styles.side}>
-          <div className={`${styles.promo} grain`}>
+          <div className={`${styles.promo} oxy-wash-light grain`}>
             <div className={styles.promoText}>
               <h3 className={styles.promoTitle}>{promo.title}</h3>
               <p className={styles.promoSub}>{promo.subtitle}</p>
@@ -189,6 +191,7 @@ export function Dashboard() {
                 {promo.cta}
               </button>
             </div>
+            <BrandWatermark tone="light" />
           </div>
           <Card className={styles.sideCard}>
             <h3 className={styles.cardTitle}>{side.title}</h3>

@@ -8,7 +8,7 @@ export function SignIn() {
 
   return (
     <div className={styles.gate}>
-      <div className={`${styles.brandPanel} grain`}>
+      <div className={`${styles.brandPanel} oxy-plate-warm oxy-wash grain`}>
         <div className={styles.brandRow}>
           <span className={styles.brandMark}>
             <LogoMark size={18} monochrome />
@@ -26,14 +26,14 @@ export function SignIn() {
         </div>
         <div
           className={styles.illustration}
-          style={{ backgroundImage: "url('/illustrations/growth.svg')" }}
+          style={{ backgroundImage: "url('/illustrations/sign-in.svg')" }}
         />
         <div className={styles.brandFootnote}>
           <OxygeneMark size={15} tone="var(--surface)" />
           <span>An Oxygene product</span>
         </div>
       </div>
-      <div className={styles.formPanel}>
+      <div className={`${styles.formPanel} oxy-wash-soft`}>
         <div className={styles.form}>
           <h1 className={styles.welcome}>Welcome back</h1>
           <p className={styles.lede}>Sign in with your Oxygene work account to continue.</p>
