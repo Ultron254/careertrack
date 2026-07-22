@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/auth/authProvider';
 import { useDashboard } from '@/api/queries/insights';
 import { DonutChart } from '@/components/charts/DonutChart';
 import { TrendChart } from '@/components/charts/TrendChart';
@@ -7,7 +8,7 @@ import { Card } from '@/components/ui/Card';
 import { StatusBadge } from '@/components/ui/Badge';
 import { CategoryChip } from '@/components/ui/Badge';
 import { ErrorState } from '@/components/ui/States';
-import { accentColour } from '@/components/ui/accent';
+import { accentColour, accentGradient } from '@/components/ui/accent';
 import type { GoalCategory } from '@/types/domain';
 import { KpiCard } from '@/components/ui/KpiCard';
 import { DashboardSkeleton } from './DashboardSkeleton';
@@ -19,12 +20,16 @@ const isCategory = (value: string | null): value is GoalCategory =>
 
 export function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data, isPending, isError, error, refetch } = useDashboard();
 
   if (isPending) return <DashboardSkeleton />;
   if (isError) return <div className={styles.page}><ErrorState error={error} onRetry={() => refetch()} /></div>;
 
   const { banner, kpis, statusDonut, trend, categoryBars, list, side, promo } = data;
+  const firstName = user?.name.split(' ')[0] ?? 'there';
+  const bannerTitle = banner.title.replace('{firstName}', firstName);
+  const topStatus = [...statusDonut.segments].sort((a, b) => b.share - a.share)[0];
 
   return (
     <div className={`${styles.page} view`}>
@@ -33,7 +38,7 @@ export function Dashboard() {
         <div className={styles.bannerInner}>
           <div className={styles.bannerText}>
             <div className={styles.bannerKicker}>{banner.kicker}</div>
-            <h2 className={styles.bannerTitle}>{banner.title}</h2>
+            <h2 className={styles.bannerTitle}>{bannerTitle}</h2>
             <p className={styles.bannerSub}>{banner.subtitle}</p>
           </div>
           <div className={styles.bannerAside}>
@@ -60,7 +65,11 @@ export function Dashboard() {
         <Card className={styles.chartCard}>
           <h3 className={styles.cardTitle}>{statusDonut.title}</h3>
           <div className={styles.donutRow}>
-            <DonutChart segments={statusDonut.segments} />
+            <DonutChart
+              segments={statusDonut.segments}
+              centerValue={topStatus ? `${topStatus.share}%` : undefined}
+              centerLabel={topStatus?.label}
+            />
             <div className={styles.legend}>
               {statusDonut.segments.map((segment) => (
                 <div key={segment.label} className={styles.legendRow}>
@@ -84,18 +93,26 @@ export function Dashboard() {
         <Card className={styles.chartCard}>
           <h3 className={styles.cardTitle}>{categoryBars.title}</h3>
           <div className={styles.bars}>
-            {categoryBars.bars.map((bar) => (
-              <div key={bar.label} className={styles.barCol}>
-                <span className={styles.barValue} style={{ color: accentColour[bar.accent] }}>
-                  {bar.valueLabel}
-                </span>
-                <div
-                  className={styles.bar}
-                  style={{ height: `${Math.max(6, bar.heightPct)}%`, background: accentColour[bar.accent] }}
-                />
-                <span className={styles.barLabel}>{bar.label}</span>
-              </div>
-            ))}
+            {categoryBars.bars.map((bar) => {
+              const height = Math.max(6, bar.heightPct);
+              return (
+                <div key={bar.label} className={styles.barCol}>
+                  <div className={styles.barTrack}>
+                    <div
+                      className={styles.bar}
+                      style={{ height: `${height}%`, background: accentGradient[bar.accent] }}
+                    />
+                    <span
+                      className={styles.barValue}
+                      style={{ bottom: `calc(${height}% + 6px)`, color: accentColour[bar.accent] }}
+                    >
+                      {bar.valueLabel}
+                    </span>
+                  </div>
+                  <span className={styles.barLabel}>{bar.label}</span>
+                </div>
+              );
+            })}
           </div>
         </Card>
       </div>

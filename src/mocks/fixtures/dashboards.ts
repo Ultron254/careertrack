@@ -8,7 +8,7 @@ export const dashboards: Record<Role, Dashboard> = {
   employee: {
     banner: {
       kicker: 'Goal setting · closing soon',
-      title: 'Hi Amara 👋 one goal needs attention',
+      title: 'Hi {firstName} 👋 one goal needs attention',
       subtitle:
         'Your Financial goal was returned with a comment. Edit & resubmit before the window closes.',
       cta: 'Fix returned goal',

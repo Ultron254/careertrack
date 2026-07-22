@@ -12,6 +12,23 @@ export const accentColour: Record<Accent, string> = {
   ink: 'var(--ink)',
 };
 
+// Deep end of each accent, for gradient fills and shading.
+export const accentDeep: Record<Accent, string> = {
+  teal: 'var(--teal-deep)',
+  blue: 'var(--blue-deep)',
+  orange: 'var(--orange-deep)',
+  gold: 'var(--gold-deep)',
+  ink: 'var(--ink-soft)',
+};
+
+export const accentGradient: Record<Accent, string> = {
+  teal: 'var(--grad-client)',
+  blue: 'var(--grad-company)',
+  orange: 'var(--grad-people)',
+  gold: 'var(--grad-financial)',
+  ink: 'var(--grad-ink)',
+};
+
 // The fixed display order of the four goal categories, shared across features.
 export const categoryOrder: GoalCategory[] = ['Client', 'Company', 'People', 'Financial'];
 

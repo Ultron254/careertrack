@@ -6,9 +6,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   background: var(--grad-sunset);
   color: var(--surface);
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 .mark {
@@ -16,6 +22,7 @@
   height: 76px;
   border-radius: 22px;
   background: rgba(var(--white-rgb), 0.16);
+  border: 1px solid rgba(var(--white-rgb), 0.28);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,10 +32,25 @@
 .name {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 26px;
+  font-size: 27px;
+  letter-spacing: -0.02em;
 }
 
 .tagline {
   font-size: 14px;
   opacity: 0.85;
+}
+
+.brandFooter {
+  position: absolute;
+  bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  opacity: 0.9;
+}
+.brandFooter strong {
+  font-weight: 700;
 }

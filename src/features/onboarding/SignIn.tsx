@@ -1,6 +1,6 @@
 import { useAuth } from '@/auth/authProvider';
 import { Icon } from '@/components/icons/Icon';
-import { LogoMark } from '@/components/ui/Logo';
+import { LogoMark, OxygeneMark } from '@/components/ui/Logo';
 import styles from './SignIn.module.css';
 
 export function SignIn() {
@@ -13,18 +13,25 @@ export function SignIn() {
           <span className={styles.brandMark}>
             <LogoMark size={18} monochrome />
           </span>
-          <span className={styles.brandName}>CareerTrack</span>
+          <span className={styles.brandWordmark}>
+            CareerTrack
+            <small>by Oxygene</small>
+          </span>
         </div>
         <div className={styles.pitch}>
           <h2 className={styles.pitchTitle}>Career conversations, all in one place.</h2>
           <p className={styles.pitchBody}>
-            Set goals, get feedback and grow. Welcoming, structured and pressure free.
+            Oxygene's home for goals, feedback and growth. Welcoming, structured and pressure free.
           </p>
         </div>
         <div
           className={styles.illustration}
           style={{ backgroundImage: "url('/illustrations/growth.svg')" }}
         />
+        <div className={styles.brandFootnote}>
+          <OxygeneMark size={15} tone="var(--surface)" />
+          <span>An Oxygene product</span>
+        </div>
       </div>
       <div className={styles.formPanel}>
         <div className={styles.form}>

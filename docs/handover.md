@@ -68,7 +68,7 @@ Navigation is data, not scattered conditionals. `sidebarOrder` drives the deskto
 Components only ever call `useAuth()`. They never import MSAL.
 
 - **Mock mode** (`VITE_AUTH_MODE=mock`): `MockAuthProvider` returns a fixture user and resolves a fake token, so the app runs with no tenant. The role preview bar can switch the active persona in this mode.
-- **MSAL mode** (`VITE_AUTH_MODE=msal`): `MsalAuthProvider` wraps `@azure/msal-react`, reads the Entra config from the environment, and resolves the role from the token.
+- **MSAL mode** (`VITE_AUTH_MODE=msal`): `EntraAuthProvider` wraps `@azure/msal-react`, reads the Entra config from the environment, and resolves the role from the token.
 
 Entra sends application roles in the token's `roles` claim, for example `{ "roles": ["CareerTrack.Manager"] }`. `roleFromClaims` in `roles.ts` maps those to the internal `Role`, falling back to `employee` for unknown or missing claims.
 

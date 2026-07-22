@@ -7,6 +7,11 @@
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
   flex: none;
+  /* The blur already opens a stacking context; lifting the whole header above
+     the scrolling content keeps the notifications and account dropdowns on top
+     of the dashboard banner, which is a later DOM sibling. */
+  position: relative;
+  z-index: 40;
 }
 
 .iconButton {

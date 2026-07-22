@@ -13,6 +13,45 @@
   align-items: center;
   justify-content: center;
   padding: 40px;
+  color: var(--surface);
+}
+
+.brandLockup {
+  position: absolute;
+  top: 32px;
+  left: 40px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.brandMark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(var(--white-rgb), 0.18);
+  border: 1px solid rgba(var(--white-rgb), 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brandWordmark {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.brandWordmark small {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  opacity: 0.82;
 }
 
 .skip {
@@ -33,13 +72,36 @@
 .illustration {
   position: relative;
   width: 100%;
-  max-width: 600px;
-  height: 82%;
+  max-width: 560px;
+  height: 76%;
   border-radius: 28px;
-  background-color: rgba(var(--white-rgb), 0.92);
-  background-size: 62% auto;
+  background-color: rgba(var(--white-rgb), 0.94);
+  background-size: 58% auto;
   background-repeat: no-repeat;
   background-position: center;
+  box-shadow:
+    0 40px 80px -30px rgba(20, 17, 50, 0.55),
+    inset 0 1px 0 rgba(var(--white-rgb), 0.6);
+}
+
+.visualCaption {
+  position: absolute;
+  bottom: 44px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: rgba(var(--ink-rgb), 0.28);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(var(--white-rgb), 0.24);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--surface);
+  white-space: nowrap;
 }
 
 .panel {
@@ -133,6 +195,18 @@
   color: var(--surface);
   font-weight: 600;
   font-size: 15.5px;
+}
+
+.panelFooter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
 }
 
 @media (max-width: 900px) {

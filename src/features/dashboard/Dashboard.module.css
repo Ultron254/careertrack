@@ -177,8 +177,9 @@
 .bars {
   display: flex;
   align-items: flex-end;
-  gap: 12px;
-  height: 120px;
+  gap: 14px;
+  height: 148px;
+  padding-top: 18px;
 }
 
 .barCol {
@@ -186,26 +187,48 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 9px;
   height: 100%;
-  justify-content: flex-end;
 }
 
-.barValue {
-  font-size: 11.5px;
-  font-weight: 700;
+.barTrack {
+  position: relative;
+  width: 100%;
+  max-width: 42px;
+  flex: 1;
+  border-radius: 9px;
+  background: rgba(var(--ink-rgb), 0.04);
 }
 
 .bar {
-  width: 100%;
-  max-width: 38px;
-  border-radius: 7px 7px 0 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 9px 9px 5px 5px;
+  box-shadow: inset 0 1px 0 rgba(var(--white-rgb), 0.3);
+  transition: height var(--duration-view) var(--ease-shell);
+}
+
+.barValue {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .barLabel {
   font-size: 11px;
   color: var(--text-soft);
   font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    transition: none;
+  }
 }
 
 .bottom {

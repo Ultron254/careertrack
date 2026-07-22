@@ -34,10 +34,32 @@
   justify-content: center;
 }
 
-.brandName {
+.brandWordmark {
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 17px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.brandWordmark small {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  opacity: 0.82;
+}
+
+.brandFootnote {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  opacity: 0.9;
 }
 
 .pitch {

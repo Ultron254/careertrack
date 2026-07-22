@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LogoMark, OxygeneMark } from '@/components/ui/Logo';
 import styles from './OnboardingCarousel.module.css';
 
 interface Step {
@@ -17,14 +18,14 @@ const steps: Step[] = [
     gradient: 'var(--grad-client)',
     tag: '\uD83C\uDFAF Set goals',
     title: 'Set goals you believe in',
-    body: 'A friendly step by step flow across Client, Company, People and Financial. Save drafts and submit when every section is complete.',
+    body: "A friendly step by step flow across Oxygene's four goal categories: Client, Company, People and Financial. Save drafts and submit when every section is complete.",
   },
   {
     illustration: '/illustrations/chat.svg',
     gradient: 'var(--grad-people)',
     tag: '\uD83D\uDCAC Get feedback',
     title: 'Feedback that flows',
-    body: 'Request input from any colleague and carry it into your appraisal. Managers comment, and the conversation stays yours.',
+    body: 'Request input from anyone across the agency and carry it into your appraisal. Managers comment, and the conversation stays yours.',
   },
   {
     illustration: '/illustrations/growth.svg',
@@ -38,7 +39,7 @@ const steps: Step[] = [
     gradient: 'var(--grad-financial)',
     tag: '\uD83D\uDDD3\uFE0F Stay on cycle',
     title: 'Never miss a milestone',
-    body: 'Cycle reminders, calendar sync and gentle nudges keep goal setting and reviews on track, pressure free.',
+    body: 'Cycle reminders, calendar sync and gentle nudges keep goal setting and reviews on track across every Oxygene team, pressure free.',
   },
 ];
 
@@ -53,6 +54,15 @@ export function OnboardingCarousel({ onDone }: { onDone: () => void }) {
   return (
     <div className={styles.gate}>
       <div className={`${styles.visual} grain`} style={{ background: step.gradient }}>
+        <div className={styles.brandLockup}>
+          <span className={styles.brandMark}>
+            <LogoMark size={18} monochrome />
+          </span>
+          <span className={styles.brandWordmark}>
+            CareerTrack
+            <small>by Oxygene</small>
+          </span>
+        </div>
         <button type="button" className={styles.skip} onClick={onDone}>
           Skip intro
         </button>
@@ -60,6 +70,7 @@ export function OnboardingCarousel({ onDone }: { onDone: () => void }) {
           className={styles.illustration}
           style={{ backgroundImage: `url('${step.illustration}')` }}
         />
+        <div className={styles.visualCaption}>{step.tag}</div>
       </div>
       <div className={styles.panel}>
         <div className={styles.content}>
@@ -87,6 +98,10 @@ export function OnboardingCarousel({ onDone }: { onDone: () => void }) {
             <button type="button" className={styles.next} onClick={next}>
               {isLast ? 'Enter CareerTrack' : 'Next'}
             </button>
+          </div>
+          <div className={styles.panelFooter}>
+            <OxygeneMark size={15} tone="var(--text-muted)" />
+            <span>Built for Oxygene teams across Africa</span>
           </div>
         </div>
       </div>
