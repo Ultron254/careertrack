@@ -50,9 +50,19 @@ export async function request<T>(
       method: options.method ?? 'GET',
       headers,
       body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+      // A request that never settles leaves the UI on its skeleton forever.
+      // Fail after 15s so the error state (with its retry button) appears.
+      signal: AbortSignal.timeout(15_000),
     });
-  } catch {
-    throw new ApiError(0, 'network', 'Could not reach the server. Check your connection and retry.');
+  } catch (cause) {
+    const timedOut = cause instanceof DOMException && cause.name === 'TimeoutError';
+    throw new ApiError(
+      0,
+      timedOut ? 'timeout' : 'network',
+      timedOut
+        ? 'The server is taking too long to respond. Please retry.'
+        : 'Could not reach the server. Check your connection and retry.',
+    );
   }
 
   if (!response.ok) {

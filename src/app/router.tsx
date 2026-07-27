@@ -1,18 +1,21 @@
+import { Suspense, lazy, type ComponentType } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { ShellLayout } from '@/components/layout/ShellLayout';
-import { Dashboard } from '@/features/dashboard';
-import { MyGoals, GoalSetup } from '@/features/goals';
-import { ManagerReview } from '@/features/reviews';
-import { PeerFeedback } from '@/features/feedback';
-import { Appraisal } from '@/features/appraisals';
-import { Reports } from '@/features/reports';
-import { Calendar } from '@/features/calendar';
-import { People, EmployeeProfile } from '@/features/people';
-import { UserManagement } from '@/features/admin';
-import { Settings } from '@/features/settings';
-import { NotificationsScreen } from '@/features/notifications';
+import { ViewSkeleton } from '@/components/ui/Skeleton';
 import { AccessGuard } from './AccessGuard';
 import { NotFoundScreen } from './NotFoundScreen';
+
+// Each screen ships as its own chunk so the first paint only downloads the
+// shell plus the page being visited. The skeleton keeps the layout steady
+// while a chunk streams in.
+function lazyView(loader: () => Promise<{ default: ComponentType }>) {
+  const View = lazy(loader);
+  return (
+    <Suspense fallback={<ViewSkeleton />}>
+      <View />
+    </Suspense>
+  );
+}
 
 export const router = createBrowserRouter([
   {
@@ -21,19 +24,84 @@ export const router = createBrowserRouter([
       {
         element: <AccessGuard />,
         children: [
-          { index: true, element: <Dashboard /> },
-          { path: 'goals', element: <MyGoals /> },
-          { path: 'goals/setup', element: <GoalSetup /> },
-          { path: 'reviews', element: <ManagerReview /> },
-          { path: 'feedback', element: <PeerFeedback /> },
-          { path: 'appraisals', element: <Appraisal /> },
-          { path: 'reports', element: <Reports /> },
-          { path: 'calendar', element: <Calendar /> },
-          { path: 'people', element: <People /> },
-          { path: 'people/:userId', element: <EmployeeProfile /> },
-          { path: 'accounts', element: <UserManagement /> },
-          { path: 'settings', element: <Settings /> },
-          { path: 'notifications', element: <NotificationsScreen /> },
+          {
+            index: true,
+            element: lazyView(() =>
+              import('@/features/dashboard').then((m) => ({ default: m.Dashboard })),
+            ),
+          },
+          {
+            path: 'goals',
+            element: lazyView(() =>
+              import('@/features/goals').then((m) => ({ default: m.MyGoals })),
+            ),
+          },
+          {
+            path: 'goals/setup',
+            element: lazyView(() =>
+              import('@/features/goals').then((m) => ({ default: m.GoalSetup })),
+            ),
+          },
+          {
+            path: 'reviews',
+            element: lazyView(() =>
+              import('@/features/reviews').then((m) => ({ default: m.ManagerReview })),
+            ),
+          },
+          {
+            path: 'feedback',
+            element: lazyView(() =>
+              import('@/features/feedback').then((m) => ({ default: m.PeerFeedback })),
+            ),
+          },
+          {
+            path: 'appraisals',
+            element: lazyView(() =>
+              import('@/features/appraisals').then((m) => ({ default: m.Appraisal })),
+            ),
+          },
+          {
+            path: 'reports',
+            element: lazyView(() =>
+              import('@/features/reports').then((m) => ({ default: m.Reports })),
+            ),
+          },
+          {
+            path: 'calendar',
+            element: lazyView(() =>
+              import('@/features/calendar').then((m) => ({ default: m.Calendar })),
+            ),
+          },
+          {
+            path: 'people',
+            element: lazyView(() =>
+              import('@/features/people').then((m) => ({ default: m.People })),
+            ),
+          },
+          {
+            path: 'people/:userId',
+            element: lazyView(() =>
+              import('@/features/people').then((m) => ({ default: m.EmployeeProfile })),
+            ),
+          },
+          {
+            path: 'accounts',
+            element: lazyView(() =>
+              import('@/features/admin').then((m) => ({ default: m.UserManagement })),
+            ),
+          },
+          {
+            path: 'settings',
+            element: lazyView(() =>
+              import('@/features/settings').then((m) => ({ default: m.Settings })),
+            ),
+          },
+          {
+            path: 'notifications',
+            element: lazyView(() =>
+              import('@/features/notifications').then((m) => ({ default: m.NotificationsScreen })),
+            ),
+          },
         ],
       },
       { path: '*', element: <NotFoundScreen /> },
