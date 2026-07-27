@@ -40,7 +40,11 @@ function RefetchOnIdentityChange({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (lastUserId.current !== user?.id) {
       lastUserId.current = user?.id;
-      queryClient.removeQueries();
+      // resetQueries (not removeQueries): queries that are on screen must be
+      // refetched for the new identity, otherwise they sit in a loading state
+      // with no request in flight until the user navigates away and back.
+      void queryClient.cancelQueries();
+      void queryClient.resetQueries();
     }
   }, [user?.id, queryClient]);
 
