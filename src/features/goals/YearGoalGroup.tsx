@@ -5,7 +5,17 @@ import { StatusBadge } from '@/components/ui/Badge';
 import { categoryColour, categoryTint } from '@/components/ui/accent';
 import { categoryOrder } from './goalCopy';
 import type { YearGroup } from './useMyGoals';
+import type { CycleState } from '@/types/domain';
 import styles from './MyGoals.module.css';
+
+// A live cycle (open/closing) reads as "Active cycle" in the banner; the rest
+// use a short human label.
+const cycleBadgeLabel: Record<CycleState, string> = {
+  upcoming: 'Upcoming cycle',
+  open: 'Active cycle',
+  closing: 'Active cycle',
+  closed: 'Closed cycle',
+};
 
 export function YearGoalGroup({ group }: { group: YearGroup }) {
   const [evalOpen, setEvalOpen] = useState(false);
@@ -17,7 +27,9 @@ export function YearGoalGroup({ group }: { group: YearGroup }) {
     weight: group.cycle.categoryWeights[category],
   }));
 
-  const summary = `${group.goals.length} ${group.goals.length === 1 ? 'goal' : 'goals'}`;
+  const totalWeight = goalsByCategory.reduce((sum, entry) => sum + entry.weight, 0);
+  const summary = `${group.goals.length} ${group.goals.length === 1 ? 'goal' : 'goals'} · ${totalWeight}% weight`;
+  const cycleBadge = cycleBadgeLabel[group.cycle.state];
 
   return (
     <div className={styles.yearBlock}>
@@ -25,14 +37,14 @@ export function YearGoalGroup({ group }: { group: YearGroup }) {
         <div className={styles.yearBannerInner}>
           <span className={styles.yearNum}>{group.year}</span>
           <span className={styles.yearSummary}>{summary}</span>
-          <span className={styles.cycleBadge}>{group.cycle.state}</span>
+          <span className={styles.cycleBadge}>{cycleBadge}</span>
           <button
             type="button"
             className={styles.evalButton}
             onClick={() => setEvalOpen((open) => !open)}
           >
             <Icon name="sparkle" size={14} />
-            {evalOpen ? 'Hide evaluation' : 'Evaluate with AI'}
+            {evalOpen ? 'Hide AI evaluation' : 'AI evaluate this year'}
           </button>
         </div>
       </div>
@@ -108,7 +120,7 @@ export function YearGoalGroup({ group }: { group: YearGroup }) {
           <div
             key={entry.category}
             className={`card ${styles.catCount}`}
-            style={{ borderTopColor: categoryColour[entry.category] }}
+            style={{ borderColor: categoryColour[entry.category] }}
           >
             <div className={styles.catCountHead}>
               <span className={styles.catCountNum} style={{ color: categoryColour[entry.category] }}>

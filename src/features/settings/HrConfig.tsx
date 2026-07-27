@@ -3,6 +3,8 @@ import { Icon } from '@/components/icons/Icon';
 import type { IconName } from '@/components/icons/iconPaths';
 import { ErrorState } from '@/components/ui/States';
 import { ViewSkeleton } from '@/components/ui/Skeleton';
+import { useToast } from '@/components/ui/Toast';
+import { useCycles } from '@/api/queries/goals';
 import { categoryColour } from '@/components/ui/accent';
 import type { ReviewStage } from '@/types/domain';
 import type { AdHocCondition, EscalationRule, ReminderOffset } from '@/api/schemas/hrConfig';
@@ -57,7 +59,12 @@ const conditionCopy: Record<AdHocCondition, string> = {
 
 export function HrConfig() {
   const editor = useHrConfigEditor();
+  const toast = useToast();
+  const cyclesQuery = useCycles();
   const [section, setSection] = useState<Section>('categories');
+  // Reminder delivery channels are UI-only for now; they'll persist to the
+  // config once the notifications service exposes per-channel settings.
+  const [channels, setChannels] = useState({ inApp: true, email: true });
 
   if (editor.isPending || !editor.draft) {
     if (editor.isError) return <ErrorState error={editor.error} onRetry={editor.refetch} />;
@@ -66,8 +73,32 @@ export function HrConfig() {
 
   const { draft } = editor;
 
+  const cycles = cyclesQuery.data ?? [];
+  const activeCycle =
+    cycles.find((c) => c.state === 'open' || c.state === 'closing') ??
+    [...cycles].sort((a, b) => b.year - a.year)[0];
+  const cycleLive = activeCycle?.state === 'open' || activeCycle?.state === 'closing';
+  const daysToClose = activeCycle
+    ? Math.max(0, Math.ceil((new Date(activeCycle.closesAt).getTime() - Date.now()) / 86_400_000))
+    : null;
+
   return (
-    <div className={styles.hrLayout}>
+    <>
+      {activeCycle && (
+        <div className={`card ${styles.cycleStatus}`}>
+          <span className={styles.cycleDot} data-live={cycleLive} />
+          <div className={styles.cycleStatusBody}>
+            <div className={styles.cycleStatusTitle}>{activeCycle.year} cycle</div>
+            <div className={styles.cycleStatusSub}>
+              {cycleLive ? 'Live' : 'Not open'}
+              {daysToClose !== null && cycleLive
+                ? ` · closes in ${daysToClose} ${daysToClose === 1 ? 'day' : 'days'}`
+                : ''}
+            </div>
+          </div>
+        </div>
+      )}
+      <div className={styles.hrLayout}>
       <div className={styles.hrNav}>
         {nav.map((item) => (
           <button
@@ -134,6 +165,17 @@ export function HrConfig() {
                 >
                   Total weight: {editor.totalWeightPct}%
                 </span>
+                <button
+                  type="button"
+                  className={styles.addCategory}
+                  // Custom categories need a schema change (GoalCategory is a fixed
+                  // set today), so this surfaces intent until the backend supports it.
+                  onClick={() =>
+                    toast('Custom categories are coming soon — they need a backend change first.')
+                  }
+                >
+                  <Icon name="plus" size={14} /> Add custom category
+                </button>
               </div>
             </div>
             <div className={styles.note}>
@@ -201,6 +243,9 @@ export function HrConfig() {
               <h2 className={styles.sectionTitle}>Cycle timeline</h2>
               <p className={styles.sectionSub}>Set the windows for each phase of the cycle.</p>
             </div>
+            <div className={styles.appliesChip}>
+              <Icon name="team" size={13} /> Applies to All departments
+            </div>
             <div className={`card ${styles.card}`}>
               {draft.cyclePhases.map((phase, index) => (
                 <div key={phase.name} className={styles.phaseRow}>
@@ -247,6 +292,25 @@ export function HrConfig() {
                     {reminderCopy[r.offset]}
                   </button>
                 ))}
+              </div>
+              <div className={styles.channelRow}>
+                <span className={styles.channelLabel}>Channels</span>
+                <button
+                  type="button"
+                  className={styles.reminderPill}
+                  data-on={channels.inApp}
+                  onClick={() => setChannels((c) => ({ ...c, inApp: !c.inApp }))}
+                >
+                  <Icon name="bell" size={13} /> In-app
+                </button>
+                <button
+                  type="button"
+                  className={styles.reminderPill}
+                  data-on={channels.email}
+                  onClick={() => setChannels((c) => ({ ...c, email: !c.email }))}
+                >
+                  <Icon name="chat" size={13} /> Email
+                </button>
               </div>
             </div>
             <div className={`card ${styles.card}`}>
@@ -319,5 +383,6 @@ export function HrConfig() {
         </div>
       </div>
     </div>
+    </>
   );
 }

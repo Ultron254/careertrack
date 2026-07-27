@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useUser, useDepartments } from '@/api/queries/org';
 import { useCycles, useGoals } from '@/api/queries/goals';
-import { useSaveAppraisal, useSubmitAppraisal } from '@/api/queries/appraisals';
+import { useAppraisal, useSaveAppraisal, useSubmitAppraisal } from '@/api/queries/appraisals';
 import { ApiError } from '@/api/client';
 import { useToast } from '@/components/ui/Toast';
 import type { Cycle, Rating } from '@/types/domain';
@@ -19,6 +19,9 @@ export function useEmployeeProfile(userId: string) {
 
   const activeCycle = cyclesQuery.data ? pickActiveCycle(cyclesQuery.data) : undefined;
   const goalsQuery = useGoals(activeCycle?.id, userId);
+
+  // The subject's own self-appraisal — gives the reviewer the self-rating for context.
+  const appraisalQuery = useAppraisal(activeCycle?.id, userId);
 
   const saveAppraisal = useSaveAppraisal(activeCycle?.id ?? '', userId);
   const submitAppraisal = useSubmitAppraisal(activeCycle?.id ?? '', userId);
@@ -69,10 +72,12 @@ export function useEmployeeProfile(userId: string) {
   return {
     user: userQuery.data,
     department,
+    cycleYear: activeCycle?.year,
     goals,
     ratings,
     comments,
     overall,
+    selfOverall: appraisalQuery.data?.overallRating ?? null,
     setRating,
     setComment,
     submitRating,

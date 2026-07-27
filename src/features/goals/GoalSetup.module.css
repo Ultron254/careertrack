@@ -530,6 +530,57 @@
   margin-top: 7px;
 }
 
+.reviewBook {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  color: var(--surface);
+  background: linear-gradient(115deg, #0f7a74, var(--teal));
+}
+
+.reviewBookIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--surface);
+}
+
+.reviewBookText {
+  flex: 1;
+  min-width: 0;
+}
+
+.reviewBookTitle {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.reviewBookBody {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.reviewBookBtn {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--teal);
+  background: var(--surface);
+}
+
 .submitBlock {
   margin-top: 14px;
   padding-top: 16px;
@@ -695,6 +746,26 @@
   line-height: 1.6;
   color: var(--text-tinted);
   margin-bottom: 24px;
+}
+
+.submittedStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--blue);
+  background: var(--status-neutral-bg);
+}
+
+.submittedStatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--blue);
 }
 
 @media (max-width: 1100px) {

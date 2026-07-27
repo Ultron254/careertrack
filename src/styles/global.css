@@ -185,6 +185,15 @@ a:focus-visible,
   mix-blend-mode: multiply;
 }
 
+/* Base surface card. Feature modules add their own padding/accent on top of
+   this, so every `card` reads as a bordered white panel on the canvas — the
+   same treatment the Card component applies through its module. */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+
 /* Photo plates that sit under the doodle + scrim on hero banners. */
 .oxy-plate {
   background-image: url('/brand/plate-cool.jpg');

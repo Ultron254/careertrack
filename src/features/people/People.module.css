@@ -139,6 +139,17 @@
   color: var(--surface);
   padding: 28px 30px;
 }
+.coverScrim {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(16, 13, 40, 0.9) 0%,
+    rgba(16, 13, 40, 0.66) 54%,
+    rgba(22, 59, 82, 0.4) 100%
+  );
+}
 .coverRow {
   position: relative;
   z-index: 1;
@@ -162,6 +173,36 @@
   font-size: 14px;
   color: rgba(var(--white-rgb), 0.9);
   margin-top: 2px;
+}
+
+.messageButton {
+  flex: none;
+  align-self: center;
+  padding: 11px 20px;
+  border-radius: var(--radius-pill);
+  background: var(--orange);
+  color: var(--surface);
+  font-weight: 600;
+  font-size: 13.5px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.messageButton:hover {
+  filter: brightness(1.05);
+}
+
+.activityIllustration {
+  height: 118px;
+  margin: -4px -4px 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+.activityMeta {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
 }
 
 .profileGrid {

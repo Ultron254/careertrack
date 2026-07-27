@@ -1,9 +1,16 @@
 import { categoryColour } from '@/components/ui/accent';
+import { Icon } from '@/components/icons/Icon';
 import { categoryOrder } from './goalCopy';
 import type { useGoalSetup } from './useGoalSetup';
 import styles from './GoalSetup.module.css';
 
-export function GoalReviewStep({ s }: { s: ReturnType<typeof useGoalSetup> }) {
+export function GoalReviewStep({
+  s,
+  onSchedule,
+}: {
+  s: ReturnType<typeof useGoalSetup>;
+  onSchedule: () => void;
+}) {
   const { check } = s;
 
   return (
@@ -56,6 +63,22 @@ export function GoalReviewStep({ s }: { s: ReturnType<typeof useGoalSetup> }) {
           Weights total {check.total}%. Adjust each goal so the four categories add up to 100.
         </div>
       )}
+
+      <div className={styles.reviewBook}>
+        <span className={styles.reviewBookIcon} aria-hidden>
+          <Icon name="cal" size={20} />
+        </span>
+        <div className={styles.reviewBookText}>
+          <div className={styles.reviewBookTitle}>Book a goal review with your manager</div>
+          <p className={styles.reviewBookBody}>
+            Goals land best in a conversation. A 30-min review, on or off the platform, aligns
+            expectations early and speeds up approval.
+          </p>
+        </div>
+        <button type="button" className={styles.reviewBookBtn} onClick={onSchedule}>
+          Schedule
+        </button>
+      </div>
 
       <div className={styles.submitBlock}>
         <button

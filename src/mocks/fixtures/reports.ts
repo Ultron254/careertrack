@@ -275,8 +275,8 @@ export const reports: Record<Role, Report> = {
         deltaTone: 'muted',
         sub: 'total',
         accent: 'teal',
-        hint: 'Browse everyone in the People directory',
-        target: '/people',
+        hint: 'Browse and manage every account',
+        target: '/accounts',
       },
       {
         label: 'Weekly active',
@@ -296,7 +296,7 @@ export const reports: Record<Role, Report> = {
         sub: 'no reports',
         accent: 'orange',
         hint: 'Fix org structure for managers with no reports',
-        target: '/people',
+        target: '/accounts',
       },
       {
         label: 'Departments',

@@ -62,7 +62,7 @@ export function Reports() {
     <div className={`view ${styles.page}`}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Reports and analytics</h1>
+          <h1 className={styles.title}>Reports &amp; Analytics</h1>
           <p className={styles.subtitle}>
             Visual performance data, tailored to your role. Generate a report and export it.
           </p>
@@ -120,10 +120,12 @@ export function Reports() {
               value={r.subjectId ?? ''}
               onChange={(event) => r.setSubjectId(event.target.value || undefined)}
             >
-              <option value="">Select a person</option>
-              {r.subjectChoices.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
+              <option value="">
+                {r.subjectKind === 'department' ? 'Select a department' : 'Select a person'}
+              </option>
+              {r.subjectChoices.map((choice) => (
+                <option key={choice.id} value={choice.id}>
+                  {choice.name}
                 </option>
               ))}
             </select>
@@ -197,7 +199,11 @@ export function Reports() {
         })}
       </div>
 
-      <ReportsInsights insights={report.insights} />
+      <ReportsInsights
+        insights={report.insights}
+        onRegenerate={() => void r.refetch()}
+        regenerating={r.isFetching}
+      />
 
       <div className={styles.chartRow}>
         <div className={`card ${styles.panel}`}>

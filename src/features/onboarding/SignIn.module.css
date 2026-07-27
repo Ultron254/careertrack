@@ -9,7 +9,15 @@
 .brandPanel {
   position: relative;
   width: 46%;
-  background-color: #141132;
+  /* Sunset radial that fades into the ink brand colour, matching the sign-in design. */
+  background: radial-gradient(
+    130% 110% at 75% 15%,
+    #deb026 0%,
+    #f26532 32%,
+    #c23a6b 58%,
+    #2a2160 82%,
+    #141132 100%
+  );
   padding: 56px 52px;
   display: flex;
   flex-direction: column;

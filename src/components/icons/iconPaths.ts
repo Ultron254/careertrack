@@ -29,6 +29,8 @@ export const iconPaths = {
   chevronRight: '<path d="M9 5l7 7-7 7"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   clock: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/>',
+  refresh: '<path d="M20 11a8 8 0 0 0-14-4.5L4 8m0-4v4h4"/><path d="M4 13a8 8 0 0 0 14 4.5L20 16m0 4v-4h-4"/>',
+  shield: '<path d="M12 3l7 3v5c0 4.4-3 8.3-7 9.5C8 19.3 5 15.4 5 11V6z"/><path d="M9.2 12l2 2 3.6-3.8"/>',
 } as const;
 
 export type IconName = keyof typeof iconPaths;

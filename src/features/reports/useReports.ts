@@ -5,7 +5,7 @@ import {
   useReportSchedule,
   useSaveReportSchedule,
 } from '@/api/queries/insights';
-import { useUsers } from '@/api/queries/org';
+import { useDepartments, useUsers } from '@/api/queries/org';
 import { ApiError } from '@/api/client';
 import { useAuth } from '@/auth/authProvider';
 import { useToast } from '@/components/ui/Toast';
@@ -17,6 +17,8 @@ interface ScopeOption {
   label: string;
   note: string;
   needsSubject?: boolean;
+  // Whether the subject to pick is a person or a whole department.
+  subjectKind?: 'person' | 'department';
 }
 
 // Which report scopes each role can reach, and the note shown under the selector.
@@ -29,13 +31,13 @@ const scopesByRole: Record<Role, ScopeOption[]> = {
   ],
   people_team: [
     { scope: 'me', label: 'My report', note: 'You are viewing your own individual report.' },
-    { scope: 'employee', label: 'An employee', note: 'Individual report for any employee.', needsSubject: true },
-    { scope: 'dept', label: 'A department', note: 'Department level report across all its members.' },
+    { scope: 'employee', label: 'An employee', note: 'Individual report for any employee.', needsSubject: true, subjectKind: 'person' },
+    { scope: 'dept', label: 'A department', note: 'Department level report across all its members.', needsSubject: true, subjectKind: 'department' },
     { scope: 'org', label: 'Whole organisation', note: 'Organisation wide report. Individuals appear only in aggregate.' },
   ],
   admin: [
     { scope: 'org', label: 'Whole organisation', note: 'Organisation wide report. Individuals appear only in aggregate.' },
-    { scope: 'dept', label: 'A department', note: 'Department level report across all its members.' },
+    { scope: 'dept', label: 'A department', note: 'Department level report across all its members.', needsSubject: true, subjectKind: 'department' },
   ],
 };
 
@@ -64,12 +66,24 @@ export function useReports() {
   const activeScope = scopeOptions.find((s) => s.scope === scope) ?? scopeOptions[0];
   const reportQuery = useReport(activeScope.scope, activeScope.needsSubject ? subjectId : undefined);
   const usersQuery = useUsers();
+  const departmentsQuery = useDepartments();
 
   const exportReport = useExportReport();
   const scheduleQuery = useReportSchedule();
   const saveSchedule = useSaveReportSchedule();
 
-  const subjectChoices = useMemo(() => usersQuery.data ?? [], [usersQuery.data]);
+  const subjectKind = activeScope.subjectKind ?? 'person';
+  const subjectChoices = useMemo(
+    () => (subjectKind === 'department' ? departmentsQuery.data ?? [] : usersQuery.data ?? []),
+    [subjectKind, departmentsQuery.data, usersQuery.data],
+  );
+
+  // Picking a new scope drops any subject held for the previous one, so we
+  // never send a person id to a department report or vice versa.
+  const changeScope = (next: ReportScope) => {
+    setScope(next);
+    setSubjectId(undefined);
+  };
 
   const runExport = (format: (typeof exportFormats)[number]['format']) => {
     exportReport.mutate(
@@ -107,7 +121,8 @@ export function useReports() {
     scope: activeScope.scope,
     scopeNote: activeScope.note,
     needsSubject: !!activeScope.needsSubject,
-    setScope,
+    subjectKind,
+    setScope: changeScope,
     subjectId,
     setSubjectId,
     subjectChoices,
@@ -115,6 +130,7 @@ export function useReports() {
     setSavedView,
     report: reportQuery.data,
     isPending: reportQuery.isPending,
+    isFetching: reportQuery.isFetching,
     isError: reportQuery.isError,
     error: reportQuery.error,
     refetch: reportQuery.refetch,

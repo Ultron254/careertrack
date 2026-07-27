@@ -8,6 +8,7 @@ import { Appraisal } from '@/features/appraisals';
 import { Reports } from '@/features/reports';
 import { Calendar } from '@/features/calendar';
 import { People, EmployeeProfile } from '@/features/people';
+import { UserManagement } from '@/features/admin';
 import { Settings } from '@/features/settings';
 import { NotificationsScreen } from '@/features/notifications';
 import { AccessGuard } from './AccessGuard';
@@ -30,6 +31,7 @@ export const router = createBrowserRouter([
           { path: 'calendar', element: <Calendar /> },
           { path: 'people', element: <People /> },
           { path: 'people/:userId', element: <EmployeeProfile /> },
+          { path: 'accounts', element: <UserManagement /> },
           { path: 'settings', element: <Settings /> },
           { path: 'notifications', element: <NotificationsScreen /> },
         ],

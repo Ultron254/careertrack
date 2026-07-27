@@ -57,6 +57,24 @@ export function Calendar() {
         <div className={`card ${styles.gridCard}`}>
           <div className={styles.gridHead}>
             <div className={styles.monthLabel}>{calendar.monthLabel}</div>
+            <div className={styles.viewToggle}>
+              <button
+                type="button"
+                className={styles.viewOption}
+                data-on={calendar.view === 'month'}
+                onClick={() => calendar.setView('month')}
+              >
+                Month
+              </button>
+              <button
+                type="button"
+                className={styles.viewOption}
+                data-on={calendar.view === 'week'}
+                onClick={() => calendar.setView('week')}
+              >
+                Week
+              </button>
+            </div>
             <div className={styles.navButtons}>
               <button
                 type="button"

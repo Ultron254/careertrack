@@ -33,7 +33,15 @@ function targetFor(text: string, role: string): string | undefined {
   return undefined;
 }
 
-export function ReportsInsights({ insights }: { insights: Report['insights'] }) {
+export function ReportsInsights({
+  insights,
+  onRegenerate,
+  regenerating,
+}: {
+  insights: Report['insights'];
+  onRegenerate?: () => void;
+  regenerating?: boolean;
+}) {
   const navigate = useNavigate();
   const { role } = useAuth();
   const [answer, setAnswer] = useState<{ prompt: string; body: string } | null>(null);
@@ -46,6 +54,11 @@ export function ReportsInsights({ insights }: { insights: Report['insights'] }) 
     setAnswer({ prompt, body: `${insights.headline} ${lead}`.trim() });
   };
 
+  const regenerate = () => {
+    setAnswer(null);
+    onRegenerate?.();
+  };
+
   return (
     <div className={`card ${styles.aiPanel}`}>
       <div className={styles.aiHead}>
@@ -56,6 +69,17 @@ export function ReportsInsights({ insights }: { insights: Report['insights'] }) 
           <div className={styles.aiTitle}>AI insights</div>
           <div className={styles.aiSub}>{insights.sub}</div>
         </div>
+        {onRegenerate && (
+          <button
+            type="button"
+            className={styles.aiRegenerate}
+            onClick={regenerate}
+            disabled={regenerating}
+          >
+            <Icon name="refresh" size={14} />
+            {regenerating ? 'Regenerating' : 'Regenerate'}
+          </button>
+        )}
         <span className={styles.aiLive}>
           <span className={styles.aiLiveDot} />
           Live

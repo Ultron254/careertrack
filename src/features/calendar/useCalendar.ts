@@ -37,6 +37,7 @@ export interface DayCell {
 export function useCalendar() {
   const toast = useToast();
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
+  const [view, setView] = useState<'month' | 'week'>('month');
 
   const rangeStart = startOfMonth(month);
   const rangeEnd = endOfMonth(month);
@@ -64,6 +65,16 @@ export function useCalendar() {
     return [...leading, ...cells];
     // rangeStart/rangeEnd derive from month; events is the query result.
   }, [rangeStart, rangeEnd, events]);
+
+  // In week view we show just the seven-day row that holds today (or the first
+  // week of the month when today falls outside it).
+  const visibleDays: DayCell[] = useMemo(() => {
+    if (view === 'month') return days;
+    const weeks: DayCell[][] = [];
+    for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
+    const weekWithToday = weeks.find((week) => week.some((cell) => cell.isToday));
+    return weekWithToday ?? weeks[0] ?? [];
+  }, [days, view]);
 
   const milestones = events
     .filter((event) => event.type === 'milestone' || event.type === 'deadline')
@@ -111,7 +122,9 @@ export function useCalendar() {
     monthLabel: format(month, 'MMMM yyyy'),
     prevMonth: () => setMonth((m) => subMonths(m, 1)),
     nextMonth: () => setMonth((m) => addMonths(m, 1)),
-    days,
+    view,
+    setView,
+    days: visibleDays,
     milestones,
     upcoming,
     attendees,

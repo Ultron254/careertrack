@@ -285,9 +285,9 @@ export const dashboards: Record<Role, Dashboard> = {
       kicker: 'System · all healthy',
       title: '342 users across 6 departments',
       subtitle: 'Manage users, roles, org structure and system configuration from here.',
-      cta: 'Open config',
+      cta: 'Manage accounts',
       daysLeft: null,
-      target: '/settings?tab=config',
+      target: '/accounts',
     },
     kpis: [
       {
@@ -298,7 +298,7 @@ export const dashboards: Record<Role, Dashboard> = {
         sub: 'total',
         accent: 'teal',
         hint: '342 active accounts across Oxygene',
-        target: '/people',
+        target: '/accounts',
       },
       {
         label: 'Line managers',
@@ -308,7 +308,7 @@ export const dashboards: Record<Role, Dashboard> = {
         sub: 'assigned',
         accent: 'blue',
         hint: '28 people with the manager role',
-        target: '/people',
+        target: '/accounts',
       },
       {
         label: 'People Team',
@@ -318,7 +318,7 @@ export const dashboards: Record<Role, Dashboard> = {
         sub: 'active',
         accent: 'orange',
         hint: '5 People Team members currently active',
-        target: '/people',
+        target: '/accounts',
       },
       {
         label: 'Departments',

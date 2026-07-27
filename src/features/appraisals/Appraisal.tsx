@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/auth/authProvider';
 import { Icon } from '@/components/icons/Icon';
 import { BrandWatermark } from '@/components/ui/BrandWatermark';
 import { ErrorState, EmptyState } from '@/components/ui/States';
 import { ViewSkeleton } from '@/components/ui/Skeleton';
 import { categoryColour, categoryTint, ratingColour, ratingLabels } from '@/components/ui/accent';
 import type { Rating } from '@/types/domain';
+import { AppraisalCalibration } from './AppraisalCalibration';
 import { AppraisalPeerPanel } from './AppraisalPeerPanel';
+import { ManagerAppraisalFlow } from './ManagerAppraisalFlow';
 import { useSelfAppraisal } from './useSelfAppraisal';
 import styles from './Appraisal.module.css';
 
@@ -42,9 +46,26 @@ function RatingScale({
   );
 }
 
-export function Appraisal() {
+export function Appraisal({ selfOnly = false }: { selfOnly?: boolean }) {
   const navigate = useNavigate();
+  const { role, user } = useAuth();
   const a = useSelfAppraisal();
+  const [viewOpen, setViewOpen] = useState(false);
+
+  // `selfOnly` renders just the personal self-appraisal — the manager flow uses
+  // it for its own "My appraisal" tab, so we skip the role routing in that case.
+  if (!selfOnly) {
+    // People Team and admins get the calibration and oversight view instead of a
+    // personal self-appraisal.
+    if (role === 'people_team' || role === 'admin') {
+      return <AppraisalCalibration />;
+    }
+    // Line managers also rate and sign off their team, so they get the fuller
+    // flow that wraps this self-appraisal alongside the team-rating stages.
+    if (role === 'manager') {
+      return <ManagerAppraisalFlow />;
+    }
+  }
 
   if (a.isPending) return <ViewSkeleton />;
   if (a.isError || !a.cycle) {
@@ -55,9 +76,17 @@ export function Appraisal() {
     );
   }
 
+  const firstName = user?.name.split(' ')[0] ?? '';
+  const manager = user?.managerId ? a.usersById.get(user.managerId) : undefined;
+  const managerFirst = manager?.name.split(' ')[0] ?? 'your manager';
+
   const stages = [
-    { title: 'Self appraisal', hint: a.phase === 'intro' ? 'Start here' : 'You, now', active: !a.submitted },
-    { title: 'Line manager', hint: 'Next', active: false },
+    {
+      title: 'Self appraisal',
+      hint: a.submitted ? 'Submitted' : 'You \u00b7 now',
+      active: !a.submitted,
+    },
+    { title: 'Line manager', hint: `${managerFirst} \u00b7 next`, active: false },
     { title: 'Final discussion', hint: 'Align rating', active: false },
     { title: 'Acknowledge', hint: 'Sign off', active: false },
   ];
@@ -65,9 +94,12 @@ export function Appraisal() {
   return (
     <div className={`view ${styles.page}`}>
       <div className={`oxy-plate oxy-wash grain ${styles.banner}`}>
+        <div className={styles.bannerScrim} />
         <div className={styles.bannerBody}>
-          <div className={styles.bannerKicker}>Year end appraisal, {a.cycle.year}</div>
-          <h1 className={styles.bannerTitle}>Reflect on your year</h1>
+          <div className={styles.bannerKicker}>Year-end appraisal {'\u00b7'} {a.cycle.year}</div>
+          <h1 className={styles.bannerTitle}>
+            Reflect on your year{firstName ? `, ${firstName}` : ''} {'\u2728'}
+          </h1>
           <p className={styles.bannerSub}>
             Rate yourself against each approved goal on a 1 to 4 scale. Your line manager rates next,
             then you align on a final rating together.
@@ -113,14 +145,64 @@ export function Appraisal() {
         <>
           <div className={`card ${styles.doneCard}`}>
             <div className={styles.doneMark}>
-              <Icon name="goal" size={42} />
+              <Icon name="check" size={40} />
             </div>
-            <h2 className={styles.doneTitle}>Self appraisal submitted</h2>
+            <h2 className={styles.doneTitle}>Self appraisal submitted {'\u{1F389}'}</h2>
             <p className={styles.doneBody}>
-              Sent to your line manager for the next stage. You will be invited to a final
-              discussion, then asked to acknowledge and sign off your aligned rating.
+              Sent to {manager?.name ?? 'your line manager'} for the line-manager stage. You will be
+              invited to a final discussion, then asked to acknowledge and sign off your aligned
+              rating.
             </p>
+            <button
+              type="button"
+              className={styles.viewButton}
+              onClick={() => setViewOpen((open) => !open)}
+            >
+              {viewOpen ? 'Hide my appraisal' : 'View my appraisal'}
+            </button>
           </div>
+
+          {viewOpen && (
+            <div className={`card ${styles.summaryCard}`}>
+              <div className={styles.summaryHead}>Your submitted ratings</div>
+              <div className={styles.summaryList}>
+                {a.flatGoals.map((goal) => {
+                  const rating = a.ratings[goal.id] ?? null;
+                  return (
+                    <div key={goal.id} className={styles.summaryRow}>
+                      <span
+                        className={styles.summaryChip}
+                        style={{
+                          background: categoryTint[goal.category],
+                          color: categoryColour[goal.category],
+                        }}
+                      >
+                        <span
+                          className={styles.summaryChipDot}
+                          style={{ background: categoryColour[goal.category] }}
+                        />
+                        {goal.category}
+                      </span>
+                      <span className={styles.summaryTitle}>{goal.title}</span>
+                      {rating && (
+                        <span className={styles.summaryScore} style={{ color: ratingColour[rating] }}>
+                          {rating}
+                          <span className={styles.summaryScoreUnit}>/4</span>
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+                <div className={styles.summaryOverall}>
+                  <span>Overall self rating</span>
+                  <strong style={{ color: a.overallRating ? ratingColour[a.overallRating] : undefined }}>
+                    {a.overallRating ? `${a.overallRating}/4` : 'Not rated'}
+                  </strong>
+                </div>
+              </div>
+            </div>
+          )}
+
           <AppraisalPeerPanel a={a} />
         </>
       ) : a.totalGoals === 0 ? (
@@ -133,101 +215,86 @@ export function Appraisal() {
             </button>
           }
         />
-      ) : a.phase === 'intro' ? (
-        <div className={`card ${styles.startCard}`}>
-          <div className={styles.startMark}>
-            <Icon name="goal" size={36} />
-          </div>
-          <h2 className={styles.startTitle}>Ready to start your self appraisal?</h2>
-          <p className={styles.startBody}>
-            You have <strong>{a.totalGoals}</strong> approved goal{a.totalGoals === 1 ? '' : 's'} for{' '}
-            {a.cycle.year}. We will walk you through each one, then growth areas and your overall
-            rating. You can save a draft at any time.
-          </p>
-          <ol className={styles.startSteps}>
-            <li>Rate each approved goal on the 1 to 4 scale</li>
-            <li>Note areas you want to grow next year</li>
-            <li>Set an overall self rating and submit</li>
-          </ol>
-          <button type="button" className={styles.submitButton} onClick={a.start}>
-            Start self appraisal
-          </button>
-        </div>
-      ) : a.phase === 'goals' && a.currentGoal ? (
+      ) : (
         <div className={styles.sections}>
-          <div className={`card ${styles.wizardCard}`}>
-            <div className={styles.wizardMeta}>
-              Goal {a.goalStep + 1} of {a.flatGoals.length}
-            </div>
-            <span
-              className={styles.sectionChip}
-              style={{
-                background: categoryTint[a.currentGoal.category],
-                color: categoryColour[a.currentGoal.category],
-              }}
+          {a.sections
+            .filter((section) => section.goals.length > 0)
+            .map((section) => (
+            <div
+              key={section.category}
+              className={`card ${styles.section}`}
+              style={{ borderLeftColor: categoryColour[section.category] }}
             >
-              <span
-                className={styles.sectionChipDot}
-                style={{ background: categoryColour[a.currentGoal.category] }}
-              />
-              {a.currentGoal.category} · weight {a.currentGoal.weight}%
-            </span>
-            <h2 className={styles.wizardTitle}>{a.currentGoal.title}</h2>
-            <p className={styles.wizardHint}>
-              How would you rate your delivery against this goal?
-            </p>
-            <div className={styles.wizardScale}>
-              <RatingScale
-                value={a.ratings[a.currentGoal.id] ?? null}
-                onPick={(rating) => a.setGoalRating(a.currentGoal!.id, rating)}
-                large
-              />
-              <div className={styles.wizardLabels}>
-                {scale.map((n) => (
-                  <span key={n}>{ratingLabels[n]}</span>
-                ))}
+              <div className={styles.sectionHead}>
+                <span
+                  className={styles.sectionChip}
+                  style={{
+                    background: categoryTint[section.category],
+                    color: categoryColour[section.category],
+                  }}
+                >
+                  <span
+                    className={styles.sectionChipDot}
+                    style={{ background: categoryColour[section.category] }}
+                  />
+                  {section.category} focus
+                </span>
+                <span className={styles.sectionWeight}>Weight {section.weight}%</span>
               </div>
+
+              {section.goals.map((goal) => (
+                <div key={goal.id} className={styles.goalBlock}>
+                  <div className={styles.goalTitle}>{goal.title}</div>
+                  <div className={styles.ratingColumns}>
+                    <div>
+                      <div className={`${styles.columnLabel} ${styles.columnLabelSelf}`}>
+                        Your rating
+                      </div>
+                      <RatingScale
+                        value={a.ratings[goal.id] ?? null}
+                        onPick={(rating) => a.setGoalRating(goal.id, rating)}
+                      />
+                    </div>
+                    <div>
+                      <div className={`${styles.columnLabel} ${styles.columnLabelMuted}`}>
+                        Manager
+                      </div>
+                      <div className={styles.placeholder}>Pending</div>
+                    </div>
+                    <div>
+                      <div className={`${styles.columnLabel} ${styles.columnLabelMuted}`}>
+                        Final (aligned)
+                      </div>
+                      <div className={styles.placeholder}>After discussion</div>
+                    </div>
+                  </div>
+                  <label className={styles.commentLabel} htmlFor={`comment-${goal.id}`}>
+                    Examples of behaviour that support your rating
+                  </label>
+                  <textarea
+                    id={`comment-${goal.id}`}
+                    className={styles.textarea}
+                    rows={3}
+                    value={a.comments[goal.id] ?? ''}
+                    onChange={(event) => a.setSectionComment(goal.id, event.target.value)}
+                    placeholder="Give specific examples"
+                  />
+                </div>
+              ))}
             </div>
-            <label className={styles.commentLabel} htmlFor="goal-comment">
-              Examples of behaviour that support your rating
-            </label>
-            <textarea
-              id="goal-comment"
-              className={styles.textarea}
-              rows={3}
-              value={a.comments[a.currentGoal.id] ?? ''}
-              onChange={(event) => a.setSectionComment(a.currentGoal!.id, event.target.value)}
-              placeholder="Give specific examples"
-            />
-            <div className={styles.wizardNav}>
-              <button type="button" className={styles.draftButton} onClick={a.backGoal}>
-                Back
-              </button>
-              <button type="button" className={styles.draftButton} onClick={a.saveDraft} disabled={a.saving}>
-                Save draft
-              </button>
-              <button type="button" className={styles.submitButton} onClick={a.nextGoal}>
-                {a.goalStep >= a.flatGoals.length - 1 ? 'Continue to growth areas' : 'Next goal'}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : a.phase === 'growth' ? (
-        <div className={styles.sections}>
+          ))}
+
           <div className={`card ${styles.blockCard}`}>
             <div className={styles.blockHead}>
-              <div className={styles.blockTitle}>Areas for growth and development</div>
+              <div className={styles.blockTitle}>Areas for growth &amp; development</div>
               <button type="button" className={styles.addButton} onClick={a.addGrowthArea}>
                 Add area
               </button>
             </div>
-            <p className={styles.wizardHint} style={{ marginTop: 0 }}>
-              Optional, but helpful for your line manager conversation.
-            </p>
             <div className={styles.growthList}>
               {a.growthAreas.length === 0 && (
                 <div className={styles.placeholder}>
-                  Add an area you want to develop next year, or skip ahead.
+                  Add an area you want to develop next year.
                 </div>
               )}
               {a.growthAreas.map((area) => (
@@ -265,29 +332,14 @@ export function Appraisal() {
                 </div>
               ))}
             </div>
-            <div className={styles.wizardNav}>
-              <button type="button" className={styles.draftButton} onClick={() => a.setPhase('goals')}>
-                Back
-              </button>
-              <button type="button" className={styles.draftButton} onClick={a.saveDraft} disabled={a.saving}>
-                Save draft
-              </button>
-              <button type="button" className={styles.submitButton} onClick={() => a.setPhase('overall')}>
-                Continue to overall rating
-              </button>
-            </div>
           </div>
-        </div>
-      ) : (
-        <div className={styles.sections}>
+
           <div className={`card ${styles.blockCard}`}>
             <div className={styles.overallHead}>
-              <div className={styles.blockTitle}>Overall self rating</div>
-              {a.suggested && (
-                <span className={styles.suggested}>
-                  Suggested from your goals: <strong>{a.suggested}</strong>
-                </span>
-              )}
+              <div className={styles.blockTitle}>Overall self-rating</div>
+              <span className={styles.suggested}>
+                Suggested from your goals: <strong>{a.suggested ?? '\u2014'}</strong>
+              </span>
             </div>
             <div className={styles.overallColumns}>
               <div>
@@ -321,9 +373,6 @@ export function Appraisal() {
               goals rated {'\u00b7'} overall{' '}
               {a.overallRating ? `rated ${a.overallRating}` : 'not rated'}
             </div>
-            <button type="button" className={styles.draftButton} onClick={() => a.setPhase('growth')}>
-              Back
-            </button>
             <button type="button" className={styles.draftButton} onClick={a.saveDraft} disabled={a.saving}>
               Save as draft
             </button>
@@ -333,7 +382,7 @@ export function Appraisal() {
               onClick={a.submit}
               disabled={!a.canSubmit || a.submitting}
             >
-              Submit self appraisal
+              Submit self-appraisal
             </button>
           </div>
         </div>

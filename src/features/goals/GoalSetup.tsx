@@ -1,11 +1,13 @@
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/icons/Icon';
 import { ErrorState } from '@/components/ui/States';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { categoryGradient } from '@/components/ui/accent';
+import { categoryColour, categoryGradient, categoryTint } from '@/components/ui/accent';
 import type { CycleState } from '@/types/domain';
+import { useCalendar } from '@/features/calendar/useCalendar';
+import { ScheduleMeetingModal } from '@/features/calendar/ScheduleMeetingModal';
 import { categoryCopy, categoryOrder } from './goalCopy';
 import { GoalCategoryStep } from './GoalCategoryStep';
 import { GoalReviewStep } from './GoalReviewStep';
@@ -62,7 +64,8 @@ function bannerFor(state: CycleState, year: number, canSubmit: boolean): BannerC
 
 export function GoalSetup() {
   const s = useGoalSetup();
-  const navigate = useNavigate();
+  const calendar = useCalendar();
+  const [scheduleOpen, setScheduleOpen] = useState(false);
 
   if (s.isPending) {
     return (
@@ -83,23 +86,26 @@ export function GoalSetup() {
   }
 
   if (s.submitted) {
+    const goalCount = categoryOrder.reduce((sum, cat) => sum + s.goalsByCategory[cat].length, 0);
     return (
       <div className={`view ${styles.page}`}>
         <div className={styles.submittedWrap}>
           <div className={styles.submittedCard}>
             <div className={styles.submittedMark}>
-              <Icon name="goal" size={44} />
+              <Icon name="check" size={44} />
             </div>
-            <h2 className={styles.submittedTitle}>Goals submitted</h2>
+            <h2 className={styles.submittedTitle}>Goals submitted &#127881;</h2>
             <p className={styles.submittedBody}>
-              Your {s.activeCycle.year} goals are with your manager for review. You can track their
-              status on My Goals, and you will be notified when they are approved or returned.
+              Your {goalCount} goals across all four categories are with{' '}
+              <strong>your line manager</strong> for review. You&rsquo;ll get a notification when
+              they respond. Approvals and returns come with comments, so it stays a conversation.
             </p>
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <Button onClick={() => navigate('/goals')}>Go to My Goals</Button>
-              <Button variant="surface" onClick={s.reviewSubmission}>
-                Back to review
-              </Button>
+            <div className={styles.submittedStatus}>
+              <span className={styles.submittedStatusDot} aria-hidden />
+              Status &middot; Submitted
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Button onClick={s.reviewSubmission}>Review my submission</Button>
             </div>
           </div>
         </div>
@@ -152,15 +158,18 @@ export function GoalSetup() {
 
       <div className={styles.stepper}>
         {categoryOrder.map((cat, index) => {
-          const done = s.goalsByCategory[cat].length > 0;
+          const count = s.goalsByCategory[cat].length;
+          const done = count > 0;
           const active = index === s.step;
           return (
             <StepButton
               key={cat}
               title={cat}
-              hint={done ? `${s.goalsByCategory[cat].length} set` : 'Not started'}
+              hint={done ? `${count} goal${count === 1 ? '' : 's'}` : 'Not started'}
               active={active}
               done={done}
+              doneColor={categoryColour[cat]}
+              activeBg={categoryTint[cat]}
               mark={done ? '\u2713' : String(index + 1)}
               onClick={() => s.setStep(index)}
               showBar
@@ -172,6 +181,8 @@ export function GoalSetup() {
           hint={s.check.canSubmit ? 'Ready' : 'Complete all first'}
           active={isReview}
           done={false}
+          activeBg="var(--ink)"
+          activeText="var(--surface)"
           mark={'\u2605'}
           onClick={() => s.setStep(REVIEW_STEP)}
         />
@@ -179,7 +190,7 @@ export function GoalSetup() {
 
       <div className={styles.twoPane}>
         <div className={styles.formSide}>
-          {isReview ? <GoalReviewStep s={s} /> : <GoalCategoryStep s={s} />}
+          {isReview ? <GoalReviewStep s={s} onSchedule={() => setScheduleOpen(true)} /> : <GoalCategoryStep s={s} />}
 
           <div className={styles.footer}>
             {s.step > 0 && (
@@ -215,6 +226,14 @@ export function GoalSetup() {
           />
         </div>
       </div>
+
+      <ScheduleMeetingModal
+        open={scheduleOpen}
+        onClose={() => setScheduleOpen(false)}
+        attendees={calendar.attendees}
+        scheduling={calendar.scheduling}
+        onSchedule={calendar.schedule}
+      />
     </div>
   );
 }
@@ -224,6 +243,9 @@ function StepButton({
   hint,
   active,
   done,
+  doneColor,
+  activeBg,
+  activeText,
   mark,
   onClick,
   showBar = false,
@@ -232,28 +254,35 @@ function StepButton({
   hint: string;
   active: boolean;
   done: boolean;
+  doneColor?: string;
+  activeBg?: string;
+  activeText?: string;
   mark: string;
   onClick: () => void;
   showBar?: boolean;
 }) {
-  const dotBg = done ? 'var(--teal)' : active ? 'var(--ink)' : 'rgba(20, 17, 50, 0.08)';
+  const dotBg = done ? (doneColor ?? 'var(--teal)') : active ? 'var(--ink)' : 'rgba(20, 17, 50, 0.08)';
   const dotFg = done || active ? 'var(--surface)' : 'var(--text-muted)';
+  // When the active tab sits on a dark fill (Review step) the label text is inverted for contrast.
+  const textColor = active ? activeText : undefined;
   return (
     <>
       <button
         type="button"
         className={styles.step}
         onClick={onClick}
-        style={{ background: active ? 'var(--status-neutral-bg)' : 'transparent' }}
+        style={{ background: active ? (activeBg ?? 'var(--status-neutral-bg)') : 'transparent' }}
       >
         <span className={styles.stepDot} style={{ background: dotBg, color: dotFg }}>
           {mark}
         </span>
         <span>
-          <span className={styles.stepTitle} style={{ display: 'block' }}>
+          <span className={styles.stepTitle} style={{ display: 'block', color: textColor }}>
             {title}
           </span>
-          <span className={styles.stepHint}>{hint}</span>
+          <span className={styles.stepHint} style={{ color: textColor }}>
+            {hint}
+          </span>
         </span>
       </button>
       {showBar && <span className={styles.stepBar} />}

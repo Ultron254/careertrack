@@ -296,7 +296,7 @@
 }
 
 .catCount {
-  border-top: 4px solid var(--ink);
+  border: 1.5px solid var(--ink);
   padding: 14px 18px;
 }
 

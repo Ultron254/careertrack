@@ -35,6 +35,7 @@ export function EmployeeProfile() {
       </button>
 
       <div className={`oxy-plate oxy-wash grain ${styles.cover}`}>
+        <div className={styles.coverScrim} />
         <div className={styles.coverRow}>
           <Avatar
             userId={user.id}
@@ -49,12 +50,15 @@ export function EmployeeProfile() {
               {profile.department ? ` \u00B7 ${profile.department.name}` : ''}
             </div>
           </div>
+          <a className={styles.messageButton} href={`mailto:${user.email}`}>
+            Message
+          </a>
         </div>
       </div>
 
       <div className={styles.profileGrid}>
         <div className={`card ${styles.panel}`}>
-          <div className={styles.panelTitle}>{`Goals`}</div>
+          <div className={styles.panelTitle}>{profile.cycleYear ? `${profile.cycleYear} goals` : 'Goals'}</div>
           <div className={styles.goalList}>
             {profile.goals.length === 0 && (
               <p style={{ color: 'var(--text-muted)', fontSize: 13.5 }}>
@@ -110,11 +114,12 @@ export function EmployeeProfile() {
               Overall
             </div>
             <div className={styles.overallValue}>
-              <span className={styles.overallNumber}>{profile.overall ?? '\u2014'}</span>
-              <span className={styles.overallScale}>/ 4.0 manager rating</span>
+              <span className={styles.overallNumber}>{profile.selfOverall ?? '\u2014'}</span>
+              <span className={styles.overallScale}>of 4</span>
+              <span className={styles.overallScale}>/ 4.0 self-rating</span>
             </div>
             <p className={styles.overallNote}>
-              Rate each goal above, then submit. The employee sees the result once the cycle closes.
+              Manager rating pending. Complete each goal above, then submit the appraisal.
             </p>
             <button
               type="button"
@@ -124,6 +129,18 @@ export function EmployeeProfile() {
             >
               {profile.submitting ? 'Submitting rating' : 'Submit rating'}
             </button>
+          </div>
+
+          {/* dummy activity summary — replace with a real activity feed from the API */}
+          <div className={`card ${styles.sideCard}`}>
+            <div
+              className={styles.activityIllustration}
+              style={{ backgroundImage: "url('/illustrations/chat.svg')" }}
+            />
+            <div className={styles.panelTitle} style={{ fontSize: 16, marginBottom: 6 }}>
+              Recent activity
+            </div>
+            <p className={styles.activityMeta}>Submitted goals · 3 days ago · 6 peer reviews received</p>
           </div>
         </div>
       </div>

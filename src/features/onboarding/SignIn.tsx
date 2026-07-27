@@ -8,7 +8,7 @@ export function SignIn() {
 
   return (
     <div className={styles.gate}>
-      <div className={`${styles.brandPanel} oxy-plate-warm oxy-wash grain`}>
+      <div className={`${styles.brandPanel} oxy-wash grain`}>
         <div className={styles.brandRow}>
           <span className={styles.brandMark}>
             <LogoMark size={18} monochrome />
@@ -21,7 +21,7 @@ export function SignIn() {
         <div className={styles.pitch}>
           <h2 className={styles.pitchTitle}>Career conversations, all in one place.</h2>
           <p className={styles.pitchBody}>
-            Oxygene's home for goals, feedback and growth. Welcoming, structured and pressure free.
+            Set goals, get feedback and grow. Welcoming, structured and pressure-free.
           </p>
         </div>
         <div

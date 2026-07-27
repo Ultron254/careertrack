@@ -404,6 +404,54 @@
   padding: 22px 24px;
 }
 
+.connectCard {
+  padding: 20px 22px;
+}
+
+.connectTitle {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.connectSub {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin: 6px 0 14px;
+}
+
+.connectActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.connectCta {
+  padding: 9px 16px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.connectDismiss {
+  padding: 9px 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 12.5px;
+}
+.connectDismiss:hover {
+  color: var(--ink);
+}
+
 .sideRow {
   display: block;
   width: 100%;

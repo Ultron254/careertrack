@@ -10,8 +10,6 @@ import type { GoalCategory, GrowthArea, Rating, User } from '@/types/domain';
 
 const newGrowthId = () => `gr-${Math.random().toString(36).slice(2, 8)}`;
 
-export type AppraisalPhase = 'intro' | 'goals' | 'growth' | 'overall';
-
 export interface AppraisalSectionData {
   category: GoalCategory;
   weight: number;
@@ -42,8 +40,6 @@ export function useSelfAppraisal() {
   const [overallComment, setOverallComment] = useState('');
   const [growthAreas, setGrowthAreas] = useState<GrowthArea[]>([]);
   const [hydrated, setHydrated] = useState(false);
-  const [phase, setPhase] = useState<AppraisalPhase>('intro');
-  const [goalStep, setGoalStep] = useState(0);
 
   const appraisal = appraisalQuery.data;
 
@@ -55,9 +51,6 @@ export function useSelfAppraisal() {
       setOverallRating(appraisal.overallRating);
       setOverallComment(appraisal.overallComment);
       setGrowthAreas(appraisal.growthAreas);
-      // Resume mid-flow if a draft already exists.
-      if (appraisal.submittedAt) setPhase('overall');
-      else if (Object.keys(appraisal.perGoalRatings).length > 0) setPhase('goals');
       setHydrated(true);
     }
   }, [appraisal, hydrated]);
@@ -103,7 +96,6 @@ export function useSelfAppraisal() {
 
   const ratedCount = goals.filter((goal) => ratings[goal.id]).length;
   const submitted = !!appraisal?.submittedAt;
-  const currentGoal = flatGoals[goalStep] ?? null;
 
   const suggested = useMemo(() => {
     let weighted = 0;
@@ -168,32 +160,6 @@ export function useSelfAppraisal() {
     });
   };
 
-  const start = () => {
-    setGoalStep(0);
-    setPhase('goals');
-  };
-
-  const nextGoal = () => {
-    if (!currentGoal) return;
-    if (!ratings[currentGoal.id]) {
-      toast('Pick a rating before continuing.', 'error');
-      return;
-    }
-    if (goalStep >= flatGoals.length - 1) {
-      setPhase('growth');
-      return;
-    }
-    setGoalStep((step) => step + 1);
-  };
-
-  const backGoal = () => {
-    if (goalStep === 0) {
-      setPhase('intro');
-      return;
-    }
-    setGoalStep((step) => Math.max(0, step - 1));
-  };
-
   const received = receivedQuery.data ?? [];
   const pendingPeers = (sentQuery.data ?? []).filter((r) => r.status === 'pending');
 
@@ -209,13 +175,6 @@ export function useSelfAppraisal() {
     cycle,
     sections,
     flatGoals,
-    currentGoal,
-    phase,
-    setPhase,
-    goalStep,
-    start,
-    nextGoal,
-    backGoal,
     ratings,
     comments,
     setGoalRating,

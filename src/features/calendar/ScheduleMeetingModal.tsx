@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { Modal } from '@/components/ui/Modal';
 import { Icon } from '@/components/icons/Icon';
@@ -36,13 +36,19 @@ export function ScheduleMeetingModal({ open, onClose, attendees, scheduling, onS
   const [reminder, setReminder] = useState(true);
   const [done, setDone] = useState(false);
 
+  // Default the attendee to the first person offered (usually the line manager)
+  // so the form opens pre-filled, matching how the design presents it.
+  useEffect(() => {
+    if (open && !attendeeId && attendees.length > 0) setAttendeeId(attendees[0].id);
+  }, [open, attendeeId, attendees]);
+
   const close = () => {
     setDone(false);
     onClose();
   };
 
   const confirm = async () => {
-    const meeting = meetingTypes.find((m) => m.id === type)!;
+    const meeting = meetingTypes.find((m) => m.id === type) ?? meetingTypes[0];
     const ok = await onSchedule({
       title: meeting.name,
       type,
@@ -63,7 +69,7 @@ export function ScheduleMeetingModal({ open, onClose, attendees, scheduling, onS
           </div>
           <div className={styles.doneTitle}>Meeting scheduled</div>
           <p className={styles.doneText}>
-            The invite is on its way via Outlook, and a reminder is set. It is now on your calendar.
+            The invite is on its way via Outlook, and a reminder is set. It's now on your calendar.
           </p>
           <button type="button" className={styles.doneButton} onClick={close}>
             Done
@@ -110,7 +116,7 @@ export function ScheduleMeetingModal({ open, onClose, attendees, scheduling, onS
             <option value="">Select an attendee</option>
             {attendees.map((user) => (
               <option key={user.id} value={user.id}>
-                {user.name}
+                {user.jobTitle ? `${user.name} (${user.jobTitle})` : user.name}
               </option>
             ))}
           </select>
@@ -146,12 +152,12 @@ export function ScheduleMeetingModal({ open, onClose, attendees, scheduling, onS
               <span className={styles.switchKnob} />
             </span>
             <span>
-              Send in app and email reminder <strong>15 min before</strong>
+              Send in-app + email reminder <strong>15 min before</strong>
             </span>
           </button>
 
           <button type="button" className={styles.submit} onClick={confirm} disabled={scheduling}>
-            {scheduling ? 'Sending invite' : 'Send invite and add to calendar'}
+            {scheduling ? 'Sending invite' : 'Send invite & add to calendar'}
           </button>
         </>
       )}

@@ -10,14 +10,19 @@ import type { Cycle, Goal, GoalStatus } from '@/types/domain';
 
 export type StatusFilter = 'All' | GoalStatus;
 
-export const statusFilters: StatusFilter[] = [
-  'All',
-  'Draft',
-  'Submitted',
-  'Under Review',
-  'Approved',
-  'Returned',
-];
+// The goals list only surfaces the states an employee acts on; Draft and
+// Submitted still show under "All" but don't get their own chip.
+export const statusFilters: StatusFilter[] = ['All', 'Approved', 'Under Review', 'Returned'];
+
+// Design labels differ slightly from the stored status values.
+export const statusFilterLabels: Record<StatusFilter, string> = {
+  All: 'All',
+  Draft: 'Draft',
+  Submitted: 'Submitted',
+  'Under Review': 'Under review',
+  Approved: 'Approved',
+  Returned: 'Returned',
+};
 
 export interface YearGroup {
   year: number;

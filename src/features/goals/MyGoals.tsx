@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/icons/Icon';
 import { ErrorState, EmptyState } from '@/components/ui/States';
 import { ViewSkeleton } from '@/components/ui/Skeleton';
-import { statusFilters, useMyGoals } from './useMyGoals';
+import { statusFilters, statusFilterLabels, useMyGoals } from './useMyGoals';
 import { YearGoalGroup } from './YearGoalGroup';
 import styles from './MyGoals.module.css';
 
@@ -39,7 +39,7 @@ export function MyGoals() {
             aria-label="Search goals"
           />
         </div>
-        <Button onClick={() => navigate('/goals/setup')}>Set or edit goals</Button>
+        <Button onClick={() => navigate('/goals/setup')}>Set / edit goals</Button>
       </div>
 
       <div className={styles.filters}>
@@ -68,7 +68,7 @@ export function MyGoals() {
             data-on={g.statusFilter === status}
             onClick={() => g.setStatusFilter(status)}
           >
-            {status}
+            {statusFilterLabels[status]}
           </button>
         ))}
       </div>

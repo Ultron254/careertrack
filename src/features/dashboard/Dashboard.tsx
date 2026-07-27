@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/auth/authProvider';
-import { useDashboard } from '@/api/queries/insights';
-import { DonutChart } from '@/components/charts/DonutChart';
+import { useDashboard } from '@/api/queries/insights';import { DonutChart } from '@/components/charts/DonutChart';
 import { TrendChart } from '@/components/charts/TrendChart';
 import { Avatar } from '@/components/ui/Avatar';
 import { Card } from '@/components/ui/Card';
@@ -23,6 +23,10 @@ export function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data, isPending, isError, error, refetch } = useDashboard();
+
+  // Local-only until the Outlook/calendar integration ships; a real build would
+  // read this from the user's connected-accounts state.
+  const [calendarDismissed, setCalendarDismissed] = useState(false);
 
   if (isPending) return <DashboardSkeleton />;
   if (isError) return <div className={styles.page}><ErrorState error={error} onRetry={() => refetch()} /></div>;
@@ -193,6 +197,30 @@ export function Dashboard() {
             </div>
             <BrandWatermark tone="light" />
           </div>
+          {!calendarDismissed && (
+            <Card className={styles.connectCard}>
+              <h3 className={styles.connectTitle}>Connect your calendar</h3>
+              <p className={styles.connectSub}>
+                Sync check-ins and review meetings with Outlook so you never miss a cycle milestone.
+              </p>
+              <div className={styles.connectActions}>
+                <button
+                  type="button"
+                  className={styles.connectCta}
+                  onClick={() => navigate('/calendar')}
+                >
+                  Connect calendar
+                </button>
+                <button
+                  type="button"
+                  className={styles.connectDismiss}
+                  onClick={() => setCalendarDismissed(true)}
+                >
+                  Remind me later
+                </button>
+              </div>
+            </Card>
+          )}
           <Card className={styles.sideCard}>
             <h3 className={styles.cardTitle}>{side.title}</h3>
             {side.rows.map((row) => {

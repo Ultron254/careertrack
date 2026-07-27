@@ -8,6 +8,7 @@ export type ScreenKey =
   | 'goals'
   | 'reviews'
   | 'people'
+  | 'accounts'
   | 'feedback'
   | 'appraisals'
   | 'reports'
@@ -18,7 +19,7 @@ export interface Screen {
   key: ScreenKey;
   label: string;
   path: string;
-  icon: 'dashboard' | 'goal' | 'team' | 'chat' | 'doc' | 'chart' | 'cal' | 'gear';
+  icon: 'dashboard' | 'goal' | 'team' | 'chat' | 'doc' | 'chart' | 'cal' | 'gear' | 'shield';
 }
 
 export const screens: Record<ScreenKey, Screen> = {
@@ -26,6 +27,7 @@ export const screens: Record<ScreenKey, Screen> = {
   goals: { key: 'goals', label: 'My Goals', path: '/goals', icon: 'goal' },
   reviews: { key: 'reviews', label: 'Reviews', path: '/reviews', icon: 'team' },
   people: { key: 'people', label: 'People', path: '/people', icon: 'team' },
+  accounts: { key: 'accounts', label: 'Accounts', path: '/accounts', icon: 'shield' },
   feedback: { key: 'feedback', label: 'Feedback', path: '/feedback', icon: 'chat' },
   appraisals: { key: 'appraisals', label: 'Appraisals', path: '/appraisals', icon: 'doc' },
   reports: { key: 'reports', label: 'Reports', path: '/reports', icon: 'chart' },
@@ -56,7 +58,16 @@ export const sidebarOrder: Record<Role, ScreenKey[]> = {
     'feedback',
     'settings',
   ],
-  admin: ['dashboard', 'people', 'settings', 'reports', 'appraisals', 'calendar', 'feedback'],
+  admin: [
+    'dashboard',
+    'accounts',
+    'people',
+    'reports',
+    'appraisals',
+    'calendar',
+    'feedback',
+    'settings',
+  ],
 };
 
 export interface MobileTab {
@@ -86,7 +97,7 @@ export const mobileTabs: Record<Role, MobileTab[]> = {
   ],
   admin: [
     { label: 'Home', path: '/', icon: 'home' },
-    { label: 'People', path: '/people', icon: 'team' },
+    { label: 'Accounts', path: '/accounts', icon: 'team' },
     { label: 'Reports', path: '/reports', icon: 'chart' },
     { label: 'Profile', path: '/settings', icon: 'user' },
   ],
@@ -133,6 +144,7 @@ export const routeAccess: Record<Role, string[]> = {
   ],
   admin: [
     '/',
+    '/accounts',
     '/people',
     '/people/:userId',
     '/settings',
