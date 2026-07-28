@@ -27,6 +27,14 @@ ReminderOffset    = '14d' | '7d' | '3d' | '1d' | 'due'
 EscalationRule    = 'notify_manager' | 'notify_people_team' | 'auto_extend' | 'flag_record'
 AdHocCondition    = 'specific_employee' | 'department' | 'circumstance'
 ReportScope       = 'me' | 'member' | 'team' | 'employee' | 'dept' | 'org'
+
+AccountStatus       = 'active' | 'invited' | 'suspended'
+TeamAppraisalStage  = 'manager' | 'discussion' | 'acknowledge' | 'done'
+FinalRatingStatus   = 'open' | 'proposed' | 'locked' | 'flagged' | 'resolved'
+SignatureParty      = 'employee' | 'manager' | 'people_team'
+AuditAction         = 'account_invited' | 'role_changed' | 'account_suspended' |
+                      'account_reactivated' | 'invite_resent' | 'password_reset_sent' |
+                      'config_updated' | 'appraisal_locked'
 ```
 
 ## Identity and organisation
@@ -171,6 +179,75 @@ Query: `subjectId` (optional). Submits the appraisal. Returns the updated `Appra
 ### GET /api/evaluations/:year
 The year end evaluation summary for a cycle year. Returns `YearEvaluation` (narrative, score, and per goal breakdown used by the My Goals evaluation panel).
 
+## Team appraisals and calibration
+
+The record a line manager works when appraising a direct report: their ratings and evidence, the alignment discussion's agreed finals, and the three-party sign-off. Distinct from `/appraisal`, which is the subject's own self-appraisal.
+
+### GET /api/cycles/:cycleId/team-appraisals/:subjectId
+Returns the `TeamAppraisal` for that report, creating an empty one at the `manager` stage on first access. Only the subject's line manager, the People Team, or an admin may read it (`403 forbidden`).
+
+```
+TeamAppraisal = Entity & { cycleId, subjectId, managerId,
+                           stage: TeamAppraisalStage,
+                           managerRatings: Record<goalId, Rating>,
+                           evidence: Record<goalId, string>,
+                           overallComment,
+                           finals: Record<goalId, FinalRating>,
+                           signatures: Record<SignatureParty, isoDateTime | null> }
+FinalRating   = { value: Rating | null, status: FinalRatingStatus }
+```
+
+### PUT /api/cycles/:cycleId/team-appraisals/:subjectId
+Body `TeamAppraisalDraft` (`stage`, `managerRatings`, `evidence`, `overallComment`, `finals`). Returns the saved `TeamAppraisal`. Winding the stage back before `acknowledge` voids any collected signatures. Signatures themselves only move through the sign endpoint.
+
+### POST /api/cycles/:cycleId/team-appraisals/:subjectId/sign
+Body `{ party: SignatureParty }`. Returns the updated `TeamAppraisal`. Signing is only possible at the `acknowledge` stage (`409 wrong_stage`); the People Team may only sign once the employee and manager both have (`409 not_ready`). The third signature locks the record: the stage flips to `done` and an `appraisal_locked` audit event is written.
+
+### GET /api/cycles/:cycleId/calibration
+Cross-team rating overview for the People Team and admins (`403 forbidden` otherwise). Returns `Calibration`. Rows for appraisals still in flight are marked `live: true` and reflect the manager's current team-appraisal record.
+
+```
+Calibration    = { cycleId, teamName, rows: CalibrationRow[] }
+CalibrationRow = { userId, name, jobTitle,
+                   self: number | null, manager: number | null, final: number | null,
+                   stage: 'self' | TeamAppraisalStage, live: boolean }
+```
+
+## Admin accounts and audit
+
+Account provisioning is admin-only; every write in this section appends an `AuditEvent`.
+
+### GET /api/admin/accounts
+Returns `AdminAccount[]` — one row per directory user plus the operational fields the identity provider owns. `403 forbidden` for non-admins.
+
+```
+AdminAccount = { user: User, status: AccountStatus, lastActiveAt: isoDateTime | null }
+```
+
+### POST /api/admin/accounts/invite
+Body `InviteInput`. Creates the user in the directory with `status: 'invited'` and returns the new `AdminAccount` with `201`. A duplicate email returns `409 email_taken`; an invalid body `422 invalid_invite`.
+
+```
+InviteInput = { name (min 1), email, role: Role,
+                departmentId: string | null, managerId: string | null }
+```
+
+### PATCH /api/admin/accounts/:userId
+Body `{ role?: Role, status?: AccountStatus }` — send only what changed. Returns the updated `AdminAccount`. Role and status changes write `role_changed` / `account_suspended` / `account_reactivated` audit events.
+
+### POST /api/admin/accounts/:userId/resend-invite
+Re-sends the invitation email. Returns `{ sentTo: email }`. Only valid while the account is still `invited` (`409 not_invited`).
+
+### POST /api/admin/accounts/:userId/reset-password
+Sends a password reset link. Returns `{ sentTo: email }`.
+
+### GET /api/admin/audit
+The audit trail, newest first. Readable by admins and the People Team (`403 forbidden` otherwise). Returns `AuditEvent[]`.
+
+```
+AuditEvent = { id, actorId, actorName, action: AuditAction, detail, at: isoDateTime }
+```
+
 ## Dashboard and reports
 
 ### GET /api/dashboard
@@ -235,4 +312,4 @@ HrConfig = {
 ```
 
 ### PUT /api/hr-config
-Body `HrConfig`. Returns the saved config. Only `people_team` and `admin` may write it (`403 forbidden` otherwise). The self and manager review stages cannot be disabled (`422 stage_locked`), and an invalid body returns `422 invalid_config`.
+Body `HrConfig`. Returns the saved config. Only `people_team` and `admin` may write it (`403 forbidden` otherwise). The self and manager review stages cannot be disabled (`422 stage_locked`), and an invalid body returns `422 invalid_config`. A successful save writes a `config_updated` audit event.

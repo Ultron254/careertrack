@@ -150,6 +150,18 @@
     rgba(22, 59, 82, 0.4) 100%
   );
 }
+/* On narrow screens the name and meta wrap into the lighter right side of the
+   gradient; deepen the scrim so the text keeps enough contrast. */
+@media (max-width: 560px) {
+  .coverScrim {
+    background: linear-gradient(
+      100deg,
+      rgba(16, 13, 40, 0.93) 0%,
+      rgba(16, 13, 40, 0.82) 60%,
+      rgba(22, 59, 82, 0.66) 100%
+    );
+  }
+}
 .coverRow {
   position: relative;
   z-index: 1;

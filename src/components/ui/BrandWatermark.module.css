@@ -33,3 +33,9 @@
     bottom: 12px;
   }
 }
+/* Purely decorative; drop it before it can crowd wrapped banner copy. */
+@media (max-width: 520px) {
+  .mark {
+    display: none;
+  }
+}

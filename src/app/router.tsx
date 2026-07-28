@@ -91,6 +91,12 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: 'audit',
+            element: lazyView(() =>
+              import('@/features/admin').then((m) => ({ default: m.AuditLog })),
+            ),
+          },
+          {
             path: 'settings',
             element: lazyView(() =>
               import('@/features/settings').then((m) => ({ default: m.Settings })),

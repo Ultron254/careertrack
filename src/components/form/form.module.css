@@ -1,0 +1,130 @@
+/* Shared styling for the form primitives in Form.tsx. Modals across features
+   compose these instead of re-declaring their own field/button rules. */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ink);
+}
+.close {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text-soft);
+  cursor: pointer;
+}
+.close:hover {
+  border-color: var(--border-strong);
+  color: var(--ink);
+}
+.sub {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  margin: 8px 0 20px;
+}
+
+.field {
+  display: block;
+  margin-bottom: 16px;
+}
+.fieldLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-soft);
+  margin-bottom: 6px;
+}
+.input {
+  width: 100%;
+  padding: 11px 13px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--field);
+  font-size: 13.5px;
+  color: var(--ink);
+  outline: none;
+}
+.input:focus {
+  border-color: var(--ink);
+}
+.input[data-invalid='true'] {
+  border-color: var(--orange-deep);
+  background: rgba(var(--orange-rgb), 0.05);
+}
+.fieldError {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--orange-deep);
+}
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 440px) {
+  .fieldRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.ghost {
+  padding: 11px 18px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-strong);
+  background: none;
+  color: var(--text-soft);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ghost:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 18px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.primary:hover {
+  background: var(--ink-soft);
+}
+.primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.primary:disabled:hover {
+  background: var(--ink);
+}

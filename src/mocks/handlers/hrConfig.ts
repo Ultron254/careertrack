@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { hrConfigSchema } from '@/api/schemas/hrConfig';
 import { db } from '../db';
+import { recordAudit } from './admin';
 import { currentUser, errorJson, latency } from './utils';
 
 export const hrConfigHandlers = [
@@ -11,8 +12,8 @@ export const hrConfigHandlers = [
 
   http.put('/api/hr-config', async ({ request }) => {
     await latency();
-    const role = currentUser(request).role;
-    if (role !== 'people_team' && role !== 'admin') {
+    const user = currentUser(request);
+    if (user.role !== 'people_team' && user.role !== 'admin') {
       return errorJson(403, 'forbidden', 'Only the People Team or an admin can change configuration.');
     }
     const body = hrConfigSchema.safeParse(await request.json());
@@ -24,6 +25,7 @@ export const hrConfigHandlers = [
       return errorJson(422, 'stage_locked', 'Self and manager stages cannot be disabled.');
     }
     db.hrConfig = body.data;
+    recordAudit(user, 'config_updated', 'Updated the performance cycle configuration');
     return HttpResponse.json(db.hrConfig);
   }),
 ];

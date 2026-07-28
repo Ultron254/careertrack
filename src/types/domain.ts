@@ -156,3 +156,66 @@ export interface Notification extends Entity {
   // In-app path the notification opens, e.g. /goals.
   link: string;
 }
+
+// --- Administration ---------------------------------------------------------
+
+// Provisioning state owned by the identity provider. `invited` accounts have
+// never signed in; `suspended` accounts keep their history but cannot sign in.
+export type AccountStatus = 'active' | 'invited' | 'suspended';
+
+export interface AdminAccount {
+  user: User;
+  status: AccountStatus;
+  // Null when the person has never signed in.
+  lastActiveAt: IsoDateTime | null;
+}
+
+// One entry in the administrative audit trail. Admin and People Team actions
+// append here; the log itself is immutable.
+export interface AuditEvent {
+  id: string;
+  actorId: string;
+  actorName: string;
+  action:
+    | 'account_invited'
+    | 'role_changed'
+    | 'account_suspended'
+    | 'account_reactivated'
+    | 'invite_resent'
+    | 'password_reset_sent'
+    | 'config_updated'
+    | 'appraisal_locked';
+  detail: string;
+  at: IsoDateTime;
+}
+
+// --- Team appraisals ----------------------------------------------------------
+
+// A manager walks each report through these stages after the self-appraisal.
+export type TeamAppraisalStage = 'manager' | 'discussion' | 'acknowledge' | 'done';
+
+export type FinalRatingStatus = 'open' | 'proposed' | 'locked' | 'flagged' | 'resolved';
+
+export interface FinalRating {
+  value: Rating | null;
+  status: FinalRatingStatus;
+}
+
+export type SignatureParty = 'employee' | 'manager' | 'people_team';
+
+// The manager-side record of a report's appraisal: the manager's ratings and
+// evidence, the agreed finals from the alignment discussion, and the three
+// sign-offs that lock the record.
+export interface TeamAppraisal extends Entity {
+  cycleId: string;
+  subjectId: string;
+  managerId: string;
+  stage: TeamAppraisalStage;
+  // Keyed by goal id.
+  managerRatings: Record<string, Rating>;
+  evidence: Record<string, string>;
+  overallComment: string;
+  finals: Record<string, FinalRating>;
+  // Timestamp of each signature; null until that party signs.
+  signatures: Record<SignatureParty, IsoDateTime | null>;
+}

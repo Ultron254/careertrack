@@ -11,6 +11,9 @@ const formatTarget = (iso: string) => {
   try {
     return format(parseISO(iso), 'MMM yyyy');
   } catch {
+    // A malformed date from a draft shouldn't crash the wizard; show the raw
+    // value and leave a trace for debugging.
+    console.warn(`GoalCategoryStep: could not format target date "${iso}"`);
     return iso;
   }
 };

@@ -53,6 +53,17 @@ export const endpoints = {
       `/api/cycles/${cycleId}/appraisal/submit${qs({ subjectId })}`,
   },
 
+  teamAppraisals: {
+    get: (cycleId: string, subjectId: string) =>
+      `/api/cycles/${cycleId}/team-appraisals/${subjectId}`,
+    save: (cycleId: string, subjectId: string) =>
+      `/api/cycles/${cycleId}/team-appraisals/${subjectId}`,
+    sign: (cycleId: string, subjectId: string) =>
+      `/api/cycles/${cycleId}/team-appraisals/${subjectId}/sign`,
+  },
+
+  calibration: (cycleId: string) => `/api/cycles/${cycleId}/calibration`,
+
   evaluations: {
     year: (year: number) => `/api/evaluations/${year}`,
   },
@@ -77,4 +88,13 @@ export const endpoints = {
   },
 
   hrConfig: () => '/api/hr-config',
+
+  admin: {
+    accounts: () => '/api/admin/accounts',
+    invite: () => '/api/admin/accounts/invite',
+    account: (userId: string) => `/api/admin/accounts/${userId}`,
+    resendInvite: (userId: string) => `/api/admin/accounts/${userId}/resend-invite`,
+    resetPassword: (userId: string) => `/api/admin/accounts/${userId}/reset-password`,
+    audit: () => '/api/admin/audit',
+  },
 };

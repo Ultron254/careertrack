@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react';
+import { formatDistanceToNow } from 'date-fns';
 import { Modal } from '@/components/ui/Modal';
 import { Avatar } from '@/components/ui/Avatar';
 import { StatusBadge } from '@/components/ui/Badge';
 import { Icon } from '@/components/icons/Icon';
 import { useToast } from '@/components/ui/Toast';
+import { useAuditLog } from '@/api/queries/admin';
 import { useUsers } from '@/api/queries/org';
 import {
   clearAvatarOverride,
@@ -47,9 +49,9 @@ const recentFeedback = [
 ];
 
 // A Systems Administrator carries no goals, ratings or line manager, so the
-// profile swaps the performance summary for account and system context.
-// Everything below is dummy — replace with figures from the identity provider
-// and audit service once those endpoints exist.
+// profile swaps the performance summary for account and system context. The
+// glance figures below are dummy — replace with identity-provider stats once
+// those endpoints exist. Recent activity comes from the real audit endpoint.
 const adminAccess = ['Super admin', 'Account provisioning', 'Cycle configuration', 'Audit access'];
 
 const adminGlance = [
@@ -65,13 +67,6 @@ const integrations = [
   { id: 'email', name: 'Email (Microsoft 365)', meta: 'Reminders & invitations' },
 ];
 
-const adminActivity = [
-  { id: 'a1', text: 'Updated cycle reminder offsets to 14 / 7 / 3 / 1 days', when: '2 hours ago' },
-  { id: 'a2', text: 'Invited ali.hassan@oxygene.africa as PR Executive', when: 'Yesterday' },
-  { id: 'a3', text: 'Suspended Ruth Kamau pending offboarding', when: '2 days ago' },
-  { id: 'a4', text: 'Enabled the People category at 30% weight', when: 'Last week' },
-];
-
 // The avatar picker previews a colour for the initials fallback. Real photos
 // arrive through User.avatarUrl once Microsoft Graph is wired; picking a colour
 // here is a local preference only and does not overwrite a real photo.
@@ -82,6 +77,9 @@ export function ProfileTab({ user }: { user: User }) {
   const usersQuery = useUsers();
   const manager = usersQuery.data?.find((candidate) => candidate.id === user.managerId) ?? null;
   const isAdmin = user.role === 'admin';
+  // The audit trail is an admin-only endpoint; skip the request entirely for
+  // everyone else.
+  const auditQuery = useAuditLog(isAdmin);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [previewId, setPreviewId] = useState(user.id);
@@ -204,15 +202,21 @@ export function ProfileTab({ user }: { user: User }) {
               Recent admin activity
             </div>
             <div className={styles.auditList}>
-              {adminActivity.map((item) => (
-                <div key={item.id} className={styles.auditItem}>
+              {(auditQuery.data ?? []).slice(0, 5).map((event) => (
+                <div key={event.id} className={styles.auditItem}>
                   <span className={styles.auditDot} />
                   <div>
-                    <div className={styles.auditText}>{item.text}</div>
-                    <div className={styles.auditMeta}>{item.when}</div>
+                    <div className={styles.auditText}>{event.detail}</div>
+                    <div className={styles.auditMeta}>
+                      {formatDistanceToNow(new Date(event.at), { addSuffix: true })} ·{' '}
+                      {event.actorName}
+                    </div>
                   </div>
                 </div>
               ))}
+              {auditQuery.isPending && (
+                <div className={styles.auditMeta}>Loading recent activity…</div>
+              )}
             </div>
           </div>
         </div>

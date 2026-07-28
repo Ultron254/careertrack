@@ -1,0 +1,102 @@
+.page {
+  padding: 20px 28px 44px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  max-width: 60ch;
+}
+.filter {
+  padding: 9px 14px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.listCard {
+  padding: 6px 0;
+}
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 15px 22px;
+  border-bottom: 1px solid var(--border);
+}
+.row:last-child {
+  border-bottom: none;
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  margin-top: 5px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--text-muted);
+}
+.dot[data-kind='account'] {
+  background: var(--blue);
+}
+.dot[data-kind='config'] {
+  background: var(--gold);
+}
+.dot[data-kind='security'] {
+  background: var(--orange-deep);
+}
+.dot[data-kind='appraisal'] {
+  background: var(--teal-deep);
+}
+.body {
+  min-width: 0;
+  flex: 1;
+}
+.detail {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.45;
+}
+.meta {
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.action {
+  flex: none;
+  padding: 4px 11px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: var(--surface-alt);
+  color: var(--text-soft);
+  white-space: nowrap;
+}
+.empty {
+  padding: 40px 16px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--text-muted);
+}

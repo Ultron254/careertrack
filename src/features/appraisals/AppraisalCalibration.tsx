@@ -1,53 +1,24 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCycles } from '@/api/queries/goals';
+import { useCalibration } from '@/api/queries/teamAppraisals';
+import type { CalibrationRow } from '@/api/schemas/teamAppraisal';
 import { Avatar } from '@/components/ui/Avatar';
 import { BrandWatermark } from '@/components/ui/BrandWatermark';
+import { ErrorState } from '@/components/ui/States';
+import { ViewSkeleton } from '@/components/ui/Skeleton';
 import { ratingColour, ratingLabels } from '@/components/ui/accent';
-import type { Rating } from '@/types/domain';
+import { distributionOf } from './calibrationModel';
 import styles from './AppraisalCalibration.module.css';
-
-// The demo cycle-stage control walks the cohort forward one stage at a time. It
-// only drives the live row (Amara) below; Reset drops back to the start.
-const stageFlow = ['Self', 'Manager', 'Discussion', 'Acknowledge', 'Done'] as const;
-type Stage = (typeof stageFlow)[number];
 
 type BadgeKind = 'neutral' | 'discussion' | 'acknowledge' | 'locked';
 
-// How Amara's live appraisal presents at each point in the cycle.
-const liveStageBadge: Record<Stage, { label: string; kind: BadgeKind }> = {
-  Self: { label: 'Self-appraisal', kind: 'neutral' },
-  Manager: { label: 'Line manager', kind: 'neutral' },
-  Discussion: { label: 'Discussion', kind: 'discussion' },
-  Acknowledge: { label: 'Acknowledge', kind: 'acknowledge' },
-  Done: { label: 'Locked', kind: 'locked' },
+const stageBadge: Record<CalibrationRow['stage'], { label: string; kind: BadgeKind }> = {
+  self: { label: 'Self-appraisal', kind: 'neutral' },
+  manager: { label: 'Line manager', kind: 'neutral' },
+  discussion: { label: 'Discussion', kind: 'discussion' },
+  acknowledge: { label: 'Acknowledge', kind: 'acknowledge' },
+  done: { label: 'Locked', kind: 'locked' },
 };
-
-// --- Dummy calibration cohort ------------------------------------------------
-// The appraisals API does not yet expose cross-team self/manager/final ratings,
-// so the Client Service cohort is stubbed with the figures from the spec. Each
-// person's `score` feeds both the distribution chart and the team average.
-// Amara is the live row the People Team can open and work; everyone else is
-// already settled. Replace with real appraisal aggregates once the endpoint lands.
-type CohortRow = {
-  userId: string;
-  name: string;
-  title: string;
-  self: number | null;
-  manager: number | null;
-  final: number | null;
-  score: number;
-  live: boolean;
-  badge?: { label: string; kind: BadgeKind };
-};
-
-const cohort: CohortRow[] = [
-  { userId: 'u-amara', name: 'Amara Koech', title: 'Account Manager', self: null, manager: 3.1, final: 2.6, score: 2.6, live: true },
-  { userId: 'u-kevin', name: 'Kevin Njoroge', title: 'Senior AE', self: 3.2, manager: 3.0, final: 3.0, score: 3.0, live: false, badge: { label: 'Locked', kind: 'locked' } },
-  { userId: 'u-sana', name: 'Sana Patel', title: 'Account Executive', self: 2.8, manager: 2.8, final: 2.8, score: 2.8, live: false, badge: { label: 'Locked', kind: 'locked' } },
-  { userId: 'u-grace', name: 'Grace Achieng', title: 'Account Executive', self: 3.5, manager: 3.0, final: null, score: 3.0, live: false, badge: { label: 'Discussion', kind: 'discussion' } },
-  { userId: 'u-david', name: 'David Otieno', title: 'Client Service Director', self: 3.0, manager: 2.9, final: 2.6, score: 2.6, live: false, badge: { label: 'Locked', kind: 'locked' } },
-];
 
 const fmt = (value: number | null) => (value === null ? '—' : value.toFixed(1));
 
@@ -63,8 +34,6 @@ function StageBadge({ label, kind }: { label: string; kind: BadgeKind }) {
 export function AppraisalCalibration() {
   const navigate = useNavigate();
   const cyclesQuery = useCycles();
-  const [cohortStage, setCohortStage] = useState<Stage>('Self');
-  const [openLive, setOpenLive] = useState(false);
 
   const cycles = cyclesQuery.data ?? [];
   const activeCycle =
@@ -72,43 +41,25 @@ export function AppraisalCalibration() {
     [...cycles].sort((a, b) => b.year - a.year)[0];
   const year = activeCycle?.year ?? new Date().getFullYear();
 
-  // Distribution across the four rating bands, from each person's rounded score.
-  const ratings: Rating[] = [1, 2, 3, 4];
-  const distribution = ratings.map((rating) => ({
-    rating,
-    count: cohort.filter((row) => Math.round(row.score) === rating).length,
-  }));
-  const peak = Math.max(1, ...distribution.map((entry) => entry.count));
-  const teamAverage = cohort.reduce((sum, row) => sum + row.score, 0) / cohort.length;
+  const calibrationQuery = useCalibration(activeCycle?.id);
+
+  if (cyclesQuery.isPending || calibrationQuery.isPending) return <ViewSkeleton />;
+  if (cyclesQuery.isError || calibrationQuery.isError) {
+    const failed = cyclesQuery.isError ? cyclesQuery : calibrationQuery;
+    return (
+      <div className={`view ${styles.page}`}>
+        <ErrorState error={failed.error} onRetry={failed.refetch} />
+      </div>
+    );
+  }
+
+  const { teamName, rows } = calibrationQuery.data;
+  const { bands, average } = distributionOf(rows);
+  const peak = Math.max(1, ...bands.map((entry) => entry.count));
+  const liveRow = rows.find((row) => row.live);
 
   return (
     <div className={`view ${styles.page}`}>
-      <div className={styles.stageBar}>
-        <div className={styles.stageBarLabel}>
-          <span className={styles.stagePen} aria-hidden="true" />
-          Demo · cycle stage
-        </div>
-        <div className={styles.segmented} role="tablist" aria-label="Cycle stage">
-          {stageFlow.map((stage) => (
-            <button
-              key={stage}
-              type="button"
-              role="tab"
-              aria-selected={cohortStage === stage}
-              className={styles.segment}
-              data-on={cohortStage === stage}
-              onClick={() => setCohortStage(stage)}
-            >
-              {stage}
-            </button>
-          ))}
-        </div>
-        <button type="button" className={styles.resetButton} onClick={() => setCohortStage('Self')}>
-          <span className={styles.resetIcon} aria-hidden="true" />
-          Reset
-        </button>
-      </div>
-
       <div className={`oxy-plate oxy-wash grain ${styles.banner}`}>
         <div className={styles.bannerScrim} />
         <div className={styles.bannerBody}>
@@ -125,15 +76,15 @@ export function AppraisalCalibration() {
       <div className={`card ${styles.chartCard}`}>
         <div className={styles.chartHead}>
           <div className={styles.chartTitleRow}>
-            <span className={styles.cardTitle}>Rating calibration · Client Service</span>
+            <span className={styles.cardTitle}>Rating calibration · {teamName}</span>
             <span className={styles.chartHint}>Compare ratings across the team for fairness</span>
           </div>
           <div className={styles.teamAverage}>
-            Team average <strong>{teamAverage.toFixed(1)}</strong>
+            Team average <strong>{average === null ? '—' : average.toFixed(1)}</strong>
           </div>
         </div>
         <div className={styles.chart}>
-          {distribution.map((entry) => (
+          {bands.map((entry) => (
             <div key={entry.rating} className={styles.chartCol}>
               <span className={styles.chartCount}>{entry.count}</span>
               <div
@@ -152,7 +103,8 @@ export function AppraisalCalibration() {
       <div className={`card ${styles.tableCard}`}>
         <div className={styles.cardTitle}>Team appraisals</div>
         <div className={styles.tableSub}>
-          {cohort.length} people · click Open to work Amara&rsquo;s live appraisal
+          {rows.length} people
+          {liveRow && ` · ${liveRow.name.split(' ')[0]}\u2019s appraisal is in flight`}
         </div>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
@@ -167,8 +119,8 @@ export function AppraisalCalibration() {
               </tr>
             </thead>
             <tbody>
-              {cohort.map((row) => {
-                const badge = row.live ? liveStageBadge[cohortStage] : row.badge;
+              {rows.map((row) => {
+                const badge = stageBadge[row.stage];
                 return (
                   <tr key={row.userId} data-live={row.live}>
                     <td>
@@ -176,22 +128,24 @@ export function AppraisalCalibration() {
                         <Avatar userId={row.userId} name={row.name} avatarUrl={null} size={34} />
                         <div className={styles.personText}>
                           <span className={styles.personName}>{row.name}</span>
-                          <span className={styles.personMeta}>{row.title}</span>
+                          <span className={styles.personMeta}>{row.jobTitle}</span>
                         </div>
                       </div>
                     </td>
                     <td className={styles.numCol}>{fmt(row.self)}</td>
                     <td className={styles.numCol}>{fmt(row.manager)}</td>
                     <td className={`${styles.numCol} ${styles.finalCell}`}>{fmt(row.final)}</td>
-                    <td>{badge && <StageBadge label={badge.label} kind={badge.kind} />}</td>
+                    <td>
+                      <StageBadge label={badge.label} kind={badge.kind} />
+                    </td>
                     <td className={styles.actionCell}>
                       {row.live && (
                         <button
                           type="button"
                           className={styles.openButton}
-                          onClick={() => setOpenLive((open) => !open)}
+                          onClick={() => navigate(`/people/${row.userId}`)}
                         >
-                          {openLive ? 'Hide' : 'Open'}
+                          Open
                         </button>
                       )}
                     </td>
@@ -202,19 +156,22 @@ export function AppraisalCalibration() {
           </table>
         </div>
 
-        {openLive && (
+        {liveRow && (
           <div className={styles.livePanel}>
             <div>
-              <div className={styles.livePanelTitle}>Amara&rsquo;s live appraisal</div>
+              <div className={styles.livePanelTitle}>
+                {liveRow.name.split(' ')[0]}&rsquo;s live appraisal
+              </div>
               <p className={styles.livePanelText}>
-                Self-rating pending · manager average {fmt(3.1)} · provisional final {fmt(2.6)}.
-                Review each goal, resolve the discussion note, then lock the final rating.
+                Self {fmt(liveRow.self)} · manager {fmt(liveRow.manager)} · final{' '}
+                {fmt(liveRow.final)} · currently at the {stageBadge[liveRow.stage].label.toLowerCase()}{' '}
+                stage. The line manager works the record; step in here if calibration stalls.
               </p>
             </div>
             <button
               type="button"
               className={styles.livePanelButton}
-              onClick={() => navigate('/people/u-amara')}
+              onClick={() => navigate(`/people/${liveRow.userId}`)}
             >
               Open full appraisal
             </button>

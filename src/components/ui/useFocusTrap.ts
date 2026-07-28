@@ -43,7 +43,10 @@ export function useFocusTrap<T extends HTMLElement>(active: boolean, onClose: ()
     document.addEventListener('keydown', onKeyDown);
     return () => {
       document.removeEventListener('keydown', onKeyDown);
-      opener?.focus();
+      // The opener may have been unmounted while the dialog was up (e.g. a
+      // row action that disappears after a mutation); only restore focus to
+      // an element still in the document.
+      if (opener && document.body.contains(opener)) opener.focus();
     };
   }, [active, onClose]);
 

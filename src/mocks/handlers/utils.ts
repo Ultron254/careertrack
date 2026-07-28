@@ -1,5 +1,5 @@
 import { delay, HttpResponse } from 'msw';
-import { userById, users } from '../fixtures/users';
+import { db } from '../db';
 
 // The mock auth provider issues tokens shaped mock-token-<userId>. Reading the
 // user from the Authorization header keeps the mock API role aware the same
@@ -7,7 +7,7 @@ import { userById, users } from '../fixtures/users';
 export function currentUser(request: Request) {
   const auth = request.headers.get('Authorization') ?? '';
   const id = auth.replace('Bearer mock-token-', '');
-  return userById(id) ?? users[0];
+  return db.users.find((user) => user.id === id) ?? db.users[0];
 }
 
 // Enough lag to make skeleton states visible without feeling broken.

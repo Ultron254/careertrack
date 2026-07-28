@@ -9,6 +9,7 @@ export type ScreenKey =
   | 'reviews'
   | 'people'
   | 'accounts'
+  | 'audit'
   | 'feedback'
   | 'appraisals'
   | 'reports'
@@ -28,6 +29,7 @@ export const screens: Record<ScreenKey, Screen> = {
   reviews: { key: 'reviews', label: 'Reviews', path: '/reviews', icon: 'team' },
   people: { key: 'people', label: 'People', path: '/people', icon: 'team' },
   accounts: { key: 'accounts', label: 'Accounts', path: '/accounts', icon: 'shield' },
+  audit: { key: 'audit', label: 'Audit log', path: '/audit', icon: 'doc' },
   feedback: { key: 'feedback', label: 'Feedback', path: '/feedback', icon: 'chat' },
   appraisals: { key: 'appraisals', label: 'Appraisals', path: '/appraisals', icon: 'doc' },
   reports: { key: 'reports', label: 'Reports', path: '/reports', icon: 'chart' },
@@ -62,6 +64,7 @@ export const sidebarOrder: Record<Role, ScreenKey[]> = {
     'dashboard',
     'accounts',
     'people',
+    'audit',
     'reports',
     'appraisals',
     'calendar',
@@ -145,6 +148,7 @@ export const routeAccess: Record<Role, string[]> = {
   admin: [
     '/',
     '/accounts',
+    '/audit',
     '/people',
     '/people/:userId',
     '/settings',
