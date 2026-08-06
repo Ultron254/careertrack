@@ -1,4 +1,5 @@
-import type { FinalRating, Goal, Rating, TeamAppraisalStage } from '@/types/domain';
+import type { FinalRating, Goal, IsoDateTime, Rating, TeamAppraisalStage } from '@/types/domain';
+import { formatDistanceToNow, isToday } from 'date-fns';
 import { ratingLabels } from '@/components/ui/accent';
 
 // Pure helpers behind the manager appraisal flow. Kept free of React so the
@@ -88,6 +89,10 @@ export function ratingWord(value: number): string {
 }
 
 export const firstNameOf = (name: string) => name.split(' ')[0];
+
+// How a collected signature reads on the acknowledgement tiles.
+export const signedWhen = (iso: IsoDateTime) =>
+  isToday(new Date(iso)) ? 'today' : formatDistanceToNow(new Date(iso), { addSuffix: true });
 
 // --- Dummy appraisal context -------------------------------------------------
 // The appraisals API does not yet return a report's submitted self-ratings, the

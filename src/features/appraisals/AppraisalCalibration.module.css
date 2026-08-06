@@ -6,6 +6,9 @@
 
 .banner {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
   border-radius: 22px;
   overflow: hidden;
   background-color: #141132;
@@ -27,6 +30,11 @@
 .bannerBody {
   position: relative;
   z-index: 1;
+}
+.bannerFace {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
 }
 .bannerKicker {
   font-size: 12px;
@@ -248,42 +256,103 @@
   background: var(--ink-soft, #2a2652);
 }
 
-.livePanel {
+/* The expanded live-appraisal panel: a navy header band over a working body
+   where the People Team mediates flags and collects signatures. */
+.liveCard {
+  padding: 0;
+  overflow: hidden;
+  margin-top: 16px;
+}
+.liveHead {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 14px;
-  padding: 16px 18px;
-  border-radius: 14px;
-  background: rgba(var(--blue-rgb), 0.06);
-  border: 1px solid rgba(var(--blue-rgb), 0.14);
+  gap: 14px;
+  padding: 18px 24px;
+  background: linear-gradient(100deg, #141132 0%, #1c2c52 100%);
+  color: var(--surface);
 }
-.livePanelTitle {
+.liveHeadBody {
+  flex: 1;
+  min-width: 0;
+}
+.liveTitle {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: 16px;
 }
-.livePanelText {
+.liveSub {
   font-size: 12.5px;
-  color: var(--text-soft);
-  margin-top: 3px;
-  max-width: 62ch;
+  opacity: 0.78;
+  margin-top: 2px;
 }
-.livePanelButton {
-  padding: 9px 18px;
-  border: none;
+.livePill {
+  padding: 5px 14px;
   border-radius: var(--radius-pill);
-  background: var(--blue);
-  color: var(--surface);
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 11.5px;
+  font-weight: 700;
   white-space: nowrap;
 }
-.livePanelButton:hover {
-  background: var(--blue-deep);
+.liveBody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 24px 24px;
+}
+.liveNote {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.medCard {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+.medHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.medTitle {
+  font-weight: 600;
+  font-size: 14px;
+}
+.medRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 26px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.medStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.medLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.medNum {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.1;
+}
+.medPick {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.medLock {
+  margin-left: auto;
 }
 
 @media (max-width: 720px) {

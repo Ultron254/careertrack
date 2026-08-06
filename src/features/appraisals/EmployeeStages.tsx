@@ -1,10 +1,9 @@
-import { formatDistanceToNow, isToday } from 'date-fns';
 import { Icon } from '@/components/icons/Icon';
 import { Avatar } from '@/components/ui/Avatar';
 import { categoryColour, categoryTint, ratingColour } from '@/components/ui/accent';
 import type { SignaturePartyInput } from '@/api/schemas/teamAppraisal';
 import type { FinalRating, GoalCategory, IsoDateTime, Rating, User } from '@/types/domain';
-import { finalOf, ratingWord } from './reviewModel';
+import { finalOf, ratingWord, signedWhen } from './reviewModel';
 import styles from './Appraisal.module.css';
 import shared from './ManagerAppraisal.module.css';
 
@@ -29,9 +28,6 @@ export interface SignerParty {
   fallbackName: string;
   role: string;
 }
-
-const signedWhen = (iso: IsoDateTime) =>
-  isToday(new Date(iso)) ? 'today' : formatDistanceToNow(new Date(iso), { addSuffix: true });
 
 function CategoryChip({ category }: { category: GoalCategory }) {
   return (
