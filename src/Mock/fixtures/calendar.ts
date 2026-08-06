@@ -1,0 +1,97 @@
+import type { CalendarEvent } from '@/Types/domain';
+import { seeded } from './time';
+
+const event = (
+  id: string,
+  title: string,
+  type: CalendarEvent['type'],
+  startsAt: string,
+  endsAt: string,
+  attendeeIds: string[],
+  reminderEnabled = true,
+): CalendarEvent => ({
+  id,
+  title,
+  type,
+  startsAt: seeded(startsAt),
+  endsAt: seeded(endsAt),
+  attendeeIds,
+  reminderEnabled,
+  createdAt: seeded('2026-06-20T09:00:00+03:00'),
+  updatedAt: seeded('2026-06-20T09:00:00+03:00'),
+});
+
+export const calendarEvents: CalendarEvent[] = [
+  event(
+    'ev-goals-open',
+    'Goal setting opens',
+    'milestone',
+    '2026-07-03T00:00:00+03:00',
+    '2026-07-03T23:59:00+03:00',
+    [],
+  ),
+  event(
+    'ev-1on1-sana',
+    '1:1 · Sana',
+    'checkin',
+    '2026-07-09T10:00:00+03:00',
+    '2026-07-09T10:30:00+03:00',
+    ['u-david', 'u-sana'],
+  ),
+  event(
+    'ev-midyear-checkin',
+    'Mid-year check-in',
+    'checkin',
+    '2026-07-14T15:00:00+03:00',
+    '2026-07-14T15:45:00+03:00',
+    ['u-amara', 'u-david'],
+  ),
+  event(
+    'ev-team-review',
+    'Team goal review',
+    'review',
+    '2026-07-18T11:00:00+03:00',
+    '2026-07-18T12:00:00+03:00',
+    ['u-david', 'u-amara', 'u-sana', 'u-grace'],
+  ),
+  event(
+    'ev-feedback-due',
+    'Peer feedback due',
+    'deadline',
+    '2026-07-24T17:00:00+03:00',
+    '2026-07-24T17:00:00+03:00',
+    ['u-amara', 'u-grace'],
+  ),
+  event(
+    'ev-goals-close',
+    'Goal setting closes',
+    'milestone',
+    '2026-07-30T23:59:00+03:00',
+    '2026-07-30T23:59:00+03:00',
+    [],
+  ),
+  event(
+    'ev-midyear-reviews',
+    'Mid-year reviews',
+    'milestone',
+    '2026-08-15T00:00:00+03:00',
+    '2026-08-31T23:59:00+03:00',
+    [],
+  ),
+  event(
+    'ev-yearend-appraisals',
+    'Year-end appraisals',
+    'milestone',
+    '2026-12-01T00:00:00+03:00',
+    '2026-12-20T23:59:00+03:00',
+    [],
+  ),
+  event(
+    'ev-appraisal-discussion',
+    'Appraisal discussion',
+    'appraisal',
+    '2026-07-24T14:00:00+03:00',
+    '2026-07-24T14:45:00+03:00',
+    ['u-amara', 'u-david'],
+  ),
+];

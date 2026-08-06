@@ -1,12 +1,12 @@
 # CareerTrack API contract
 
-This is the contract the frontend builds against. Every path here appears in `src/api/endpoints.ts`, and every response shape is the Zod schema the client parses with, so this document cannot drift from the code. All paths carry the `/api` prefix and expect and return JSON. The client attaches a bearer token and normalises failures into one shape.
+This is the contract the backend implements. The frontend is built for Laravel + Inertia.js, so the GET routes below describe **page props** — the data a controller passes to `Inertia::render` for that screen — and the write routes are the actions the pages already submit to through Inertia's `router` and `useForm`. Every shape is a TypeScript interface under `src/Types/`, and every route is played today by a matching resolver or action under `src/Mock/`, so this document cannot drift far from the code.
 
 ## Conventions
 
-- **Auth**: every request carries `Authorization: Bearer <token>` except in mock mode.
+- **Auth**: the session is server side (Laravel + Entra ID). Pages read the signed-in user from the shared props, never from a token.
 - **Entity fields**: every stored entity includes `id` (string), `createdAt` and `updatedAt` (ISO 8601 date time).
-- **Errors**: the client normalises failures into `{ status: number, code: string, message: string }`. Handlers return at least one deliberate error per resource so the UI error states are reachable.
+- **Errors**: writes fail with field-keyed validation errors, `{ errors: { field: message } }`, the way Laravel reports them to Inertia. Every resource keeps at least one deliberate error path so the UI error states are reachable.
 - **Dates**: `isoDateTime` is a full ISO 8601 timestamp. `isoDate` is a `YYYY-MM-DD` calendar date.
 
 ## Enums

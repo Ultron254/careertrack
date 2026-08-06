@@ -1,9 +1,17 @@
 import { fileURLToPath } from 'node:url';
-import react from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
+import tailwindcss from '@tailwindcss/vite';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // Automatic memoization via the React Compiler; components it cannot
+    // prove safe are skipped rather than broken.
+    babel({ presets: [reactCompilerPreset()] }),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -16,9 +24,6 @@ export default defineConfig({
         // updates only invalidate the small chunks that actually changed.
         manualChunks(id) {
           if (!id.includes('node_modules')) return undefined;
-          if (id.includes('@azure/msal')) return 'vendor-auth';
-          if (id.includes('msw') || id.includes('@mswjs')) return 'vendor-mocks';
-          if (id.includes('@tanstack')) return 'vendor-query';
           if (id.includes('react-router')) return 'vendor-router';
           if (
             id.includes('/react/') ||

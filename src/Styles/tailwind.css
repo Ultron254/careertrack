@@ -1,0 +1,27 @@
+/* TailwindCSS 4 entry. The preflight reset is deliberately not imported: the
+   app's base styles live in global.css and the design system is expressed in
+   CSS Modules, so only the theme and utility layers are wanted here.
+
+   @theme maps the CareerTrack design tokens (tokens.css) onto Tailwind's
+   namespace so utilities like bg-ink or text-teal resolve to brand colours. */
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@theme {
+  --color-ink: #141132;
+  --color-ink-soft: #2a2160;
+  --color-orange: #f26532;
+  --color-orange-deep: #c4471c;
+  --color-teal: #0493a1;
+  --color-teal-deep: #036e78;
+  --color-blue: #1e517d;
+  --color-blue-deep: #163c5c;
+  --color-gold: #deb026;
+  --color-gold-deep: #a98615;
+  --color-plum: #c23a6b;
+  --color-canvas: #ece8e1;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f1efea;
+  --color-field: #f7f6f2;
+}

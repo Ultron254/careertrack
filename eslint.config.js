@@ -10,7 +10,7 @@ export default tseslint.config(
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 'latest',
       globals: globals.browser,
     },
     plugins: {
@@ -18,14 +18,15 @@ export default tseslint.config(
       'react-refresh': reactRefresh,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
   {
     // Context modules export a provider component alongside its hook by design;
     // losing fast-refresh on these few files is fine.
-    files: ['src/auth/**/*.tsx', 'src/app/providers.tsx', 'src/components/ui/Toast.tsx'],
+    files: ['src/Context/**/*.tsx', 'src/app.tsx', 'src/Components/ui/Toast.tsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
     },
