@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { FinalRating, Rating } from '@/types/domain';
 import {
   bestScore,
+  demoManagerRating,
   finalOf,
   fromServerStage,
   projectedAverage,
@@ -53,5 +54,19 @@ describe('projected average', () => {
 
   it('returns zero with no goals', () => {
     expect(projectedAverage([], {}, {}, selfOf)).toBe(0);
+  });
+});
+
+describe('demo manager rating', () => {
+  it('is stable, stays on the scale and never matches the self-rating', () => {
+    for (const goalId of ['g-1', 'g-2', 'goal-abc', 'goal-xyz']) {
+      for (const self of [1, 2, 3, 4] as Rating[]) {
+        const rating = demoManagerRating(goalId, self);
+        expect(rating).toBeGreaterThanOrEqual(1);
+        expect(rating).toBeLessThanOrEqual(4);
+        expect(rating).not.toBe(self);
+        expect(demoManagerRating(goalId, self)).toBe(rating);
+      }
+    }
   });
 });

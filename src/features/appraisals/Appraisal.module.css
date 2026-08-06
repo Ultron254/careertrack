@@ -12,6 +12,9 @@
   color: var(--surface);
   margin-bottom: 16px;
   padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 .bannerScrim {
   position: absolute;
@@ -24,9 +27,15 @@
     rgba(22, 59, 82, 0.4) 100%
   );
 }
+.bannerFace {
+  position: relative;
+  z-index: 1;
+  flex: none;
+}
 .bannerBody {
   position: relative;
   z-index: 1;
+  flex: 1;
 }
 .bannerKicker {
   font-size: 12px;
@@ -47,25 +56,60 @@
   opacity: 0.9;
   max-width: 52ch;
 }
-.key {
+.projected {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  text-align: center;
+  padding: 14px 20px;
+  border-radius: 16px;
+  background: rgba(var(--white-rgb), 0.13);
+  border: 1px solid rgba(var(--white-rgb), 0.22);
+}
+.projectedNum {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+}
+.projectedTag {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+/* Rating legend shown under the stepper at the rating-heavy stages. */
+.keyRow {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 16px;
+  margin-bottom: 16px;
 }
-.keyChip {
+.keyItem {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 7px 12px;
+  gap: 8px;
+  padding: 6px 13px 6px 6px;
   border-radius: var(--radius-pill);
-  background: rgba(var(--white-rgb), 0.13);
-  border: 1px solid rgba(var(--white-rgb), 0.22);
+  background: var(--surface);
+  border: 1px solid var(--border);
   font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-soft);
 }
-.keyNum {
+.keyItemNum {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
   font-family: var(--font-display);
   font-weight: 800;
+  font-size: 12px;
+  color: var(--surface);
 }
 
 .stepper {
@@ -139,25 +183,17 @@
   height: 10px;
   border-radius: 3px;
 }
+.sectionTitle {
+  font-weight: 600;
+  font-size: 15px;
+  min-width: 0;
+}
 .sectionWeight {
   margin-left: auto;
   font-size: 12.5px;
   color: var(--text-muted);
 }
 
-.goalBlock {
-  margin-bottom: 14px;
-}
-.goalTitle {
-  font-weight: 600;
-  font-size: 15px;
-  margin-bottom: 10px;
-}
-.ratingColumns {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-}
 .columnLabel {
   font-size: 11px;
   font-weight: 700;
@@ -168,12 +204,9 @@
 .columnLabelSelf {
   color: var(--teal);
 }
-.columnLabelMuted {
-  color: var(--text-muted);
-}
 .scale {
   display: flex;
-  gap: 5px;
+  gap: 6px;
 }
 .scaleButton {
   flex: 1;
@@ -197,13 +230,6 @@
   text-align: center;
 }
 
-.commentLabel {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-soft);
-  margin: 6px 0;
-}
 .textarea {
   width: 100%;
   padding: 11px 13px;
@@ -279,12 +305,6 @@
 .suggested {
   font-size: 13px;
   color: var(--text-muted);
-}
-.overallColumns {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-  max-width: 640px;
 }
 .overallScaleButton {
   flex: 1;
@@ -566,13 +586,201 @@
   margin-top: 12px;
 }
 
+/* Line-manager stage — the submitted self-appraisal, read-only, with the
+   manager and final columns still pending. */
+.subList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.subRow {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--ink);
+  border-radius: 12px;
+}
+.subMain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+.subTitle {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+.subStat {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 58px;
+}
+.subStatLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.subStatValue {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 19px;
+  line-height: 1;
+}
+.subStatPending {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Final discussion — self vs manager numbers feeding the agreed final. */
+.duel {
+  display: flex;
+  align-items: flex-end;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.duelStat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.duelLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.duelNum {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.2;
+}
+.duelArrow {
+  color: var(--text-muted);
+  font-size: 18px;
+  padding-bottom: 8px;
+}
+.duelFoot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.pillRight {
+  margin-left: auto;
+}
+.pillWaiting {
+  background: rgba(var(--gold-rgb), 0.16);
+  color: var(--status-review-fg);
+}
+
+/* Acknowledgement — the three signing parties side by side. */
+.signIntro {
+  font-size: 13.5px;
+  color: var(--text-soft);
+  line-height: 1.55;
+  margin: 6px 0 18px;
+  max-width: 72ch;
+}
+.signGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.signTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 22px 18px;
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  text-align: center;
+}
+.signTileActive {
+  border-color: var(--ink);
+  box-shadow: 0 6px 20px rgba(var(--ink-rgb), 0.1);
+}
+.signTileDone {
+  border-color: rgba(var(--teal-rgb), 0.4);
+  background: var(--tint-client);
+}
+.signTileName {
+  font-weight: 700;
+  font-size: 14.5px;
+  margin-top: 8px;
+}
+.signTileRole {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.signTile button {
+  margin-top: 10px;
+}
+.signedPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(var(--teal-rgb), 0.14);
+  color: var(--teal);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.awaitingPill {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+/* Locked record — signature register under the completion card. */
+.signRows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.signRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.signRow .signedPill {
+  margin-top: 0;
+  margin-left: auto;
+}
+.signRowBody {
+  min-width: 0;
+}
+.signRowBody .signTileName {
+  margin-top: 0;
+  font-size: 14px;
+}
+
 @media (max-width: 900px) {
   .page {
     padding: 4px 16px 32px;
-  }
-  .ratingColumns,
-  .overallColumns {
-    grid-template-columns: 1fr;
   }
   .growthRow {
     grid-template-columns: 1fr 1fr;
@@ -582,6 +790,13 @@
   }
   .stepper {
     overflow-x: auto;
+  }
+  .subRow {
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .signGrid {
+    grid-template-columns: 1fr;
   }
   .peerRequestRow {
     grid-template-columns: 1fr;

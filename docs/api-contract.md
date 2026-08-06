@@ -184,7 +184,7 @@ The year end evaluation summary for a cycle year. Returns `YearEvaluation` (narr
 The record a line manager works when appraising a direct report: their ratings and evidence, the alignment discussion's agreed finals, and the three-party sign-off. Distinct from `/appraisal`, which is the subject's own self-appraisal.
 
 ### GET /api/cycles/:cycleId/team-appraisals/:subjectId
-Returns the `TeamAppraisal` for that report, creating an empty one at the `manager` stage on first access. Only the subject's line manager, the People Team, or an admin may read it (`403 forbidden`).
+Returns the `TeamAppraisal` for that report, creating an empty one at the `manager` stage on first access. Only the subject themselves, their line manager, the People Team, or an admin may read it (`403 forbidden`). The subject's access powers the employee-side view of the cycle: the alignment discussion and their own signature.
 
 ```
 TeamAppraisal = Entity & { cycleId, subjectId, managerId,

@@ -134,3 +134,15 @@ export function goalContext(goalId: string): GoalContext {
     },
   };
 }
+
+// The line manager's per-goal ratings only exist once they have actually rated
+// in their own view. When the employee-side demo runs ahead of that, this
+// stands in a stable manager number per goal that deliberately diverges from
+// the self-rating so the alignment discussion has something to align. Replace
+// with the real manager ratings once the backend exposes them to the subject.
+export function demoManagerRating(goalId: string, self: Rating): Rating {
+  const h = hashId(goalId);
+  const offset = [2, 1, -1, -2][(h >>> 6) % 4];
+  const value = clampRating(self + offset);
+  return value === self ? clampRating(self - Math.sign(offset)) : value;
+}

@@ -32,10 +32,12 @@ function findOrCreate(cycleId: string, subjectId: string, managerId: string): Te
   return record;
 }
 
-// The subject's manager works the record; the People Team and admins may read
-// and mediate. Everyone else is locked out.
+// The subject and their manager both work the record — the employee drives
+// the discussion and sign-off from their side of the cycle. The People Team
+// and admins may read and mediate. Everyone else is locked out.
 function canAccess(request: Request, subjectId: string): boolean {
   const user = currentUser(request);
+  if (user.id === subjectId) return true;
   if (user.role === 'people_team' || user.role === 'admin') return true;
   const subject = db.users.find((candidate) => candidate.id === subjectId);
   return subject?.managerId === user.id;
