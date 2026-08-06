@@ -1,0 +1,31 @@
+<svg width="220" height="157" viewBox="0 0 220 157" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+  <!-- Drawn to match the design bundle's illustration style: 1.5px ink outlines
+       with the flat orange / purple / green / lavender fills used elsewhere. -->
+  <path d="M30 150h160" stroke="#010101" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- stand -->
+  <path d="M78 122 66 150M104 122l12 28" stroke="#010101" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- board -->
+  <circle cx="91" cy="75" r="50" fill="#FF8B37" stroke="#010101" stroke-width="1.5"/>
+  <circle cx="91" cy="75" r="38" fill="#FFFFFF" stroke="#010101" stroke-width="1.5"/>
+  <circle cx="91" cy="75" r="26" fill="#FF8B37" stroke="#010101" stroke-width="1.5"/>
+  <circle cx="91" cy="75" r="14" fill="#FFFFFF" stroke="#010101" stroke-width="1.5"/>
+  <circle cx="91" cy="75" r="6" fill="#FF8B37" stroke="#010101" stroke-width="1.5"/>
+  <!-- arrow in the bullseye -->
+  <path d="M95 71 132 34" stroke="#010101" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M91 75l8-2-6-4z" fill="#010101" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M132 34l-2-10 8 4zM132 34l10 2-4-8z" fill="#55D087" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- rising bars -->
+  <rect x="146" y="118" width="10" height="32" fill="#7B5FF1" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="162" y="104" width="10" height="46" fill="#7B5FF1" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="178" y="88" width="10" height="62" fill="#7B5FF1" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M146 96c14-4 26-12 34-24" stroke="#010101" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M180 72l2 8 6-6z" fill="#010101" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- leaves -->
+  <path d="M36 150c-2-12 2-24 10-32 3 12-1 25-10 32z" fill="#55D087" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M36 150c-8-6-12-16-11-26 9 5 14 16 11 26z" fill="#55D087" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M39 146c1-8 3-16 6-23M35 146c-3-7-6-13-8-19" stroke="#010101" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- sparkles -->
+  <path d="M162 14l2.2 5.8 5.8 2.2-5.8 2.2-2.2 5.8-2.2-5.8-5.8-2.2 5.8-2.2z" fill="#FFFFFF" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M31 52l1.8 4.7 4.7 1.8-4.7 1.8-1.8 4.7-1.8-4.7-4.7-1.8 4.7-1.8z" fill="#FFFFFF" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M191 46l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" fill="#FFFFFF" stroke="#010101" stroke-width="1.5" stroke-linejoin="round"/>
+</svg>

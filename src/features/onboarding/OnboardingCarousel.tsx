@@ -10,36 +10,43 @@ interface Step {
   body: string;
 }
 
-// The four onboarding emoji are a deliberate design choice, kept as is. Copy
+// The five onboarding emoji are a deliberate design choice, kept as is. Copy
 // keeps the design's warmth with its en dashes rewritten.
 const steps: Step[] = [
   {
-    illustration: '/illustrations/goal-setting.svg',
+    illustration: '/illustrations/sign-in.svg',
+    gradient: 'var(--grad-panel)',
+    tag: '\uD83D\uDC4B Welcome',
+    title: 'Welcome to CareerTrack',
+    body: "The CareerTrack System is a structured, collaborative space to set goals, track progress, receive feedback and take part in reviews, aligning your growth with the organisation's objectives.",
+  },
+  {
+    illustration: '/illustrations/rating.svg',
     gradient: 'var(--grad-client)',
-    tag: '\uD83C\uDFAF Set goals',
-    title: 'Set goals you believe in',
-    body: "A friendly step by step flow across Oxygene's four goal categories: Client, Company, People and Financial. Save drafts and submit when every section is complete.",
+    tag: '\uD83D\uDD0D SWOT',
+    title: 'Start with a SWOT',
+    body: 'Reflect honestly on your Strengths, Weaknesses, Opportunities and Threats. This self-assessment shapes a meaningful development plan and grounds the goals you set.',
+  },
+  {
+    illustration: '/illustrations/target.svg',
+    gradient: 'var(--grad-people)',
+    tag: '\uD83C\uDFAF SMART goals',
+    title: 'Set SMART goals',
+    body: 'Make every goal Specific, Measurable, Achievable, Relevant and Time-bound, aligned to your role and departmental priorities and focused on outcomes over activity.',
   },
   {
     illustration: '/illustrations/chat.svg',
-    gradient: 'var(--grad-people)',
-    tag: '\uD83D\uDCAC Get feedback',
+    gradient: 'var(--grad-company)',
+    tag: '\uD83D\uDCAC Feedback',
     title: 'Feedback that flows',
-    body: 'Request input from anyone across the agency and carry it into your appraisal. Managers comment, and the conversation stays yours.',
+    body: 'Open a two-way conversation with your manager to strengthen your performance. Align on your goals, request input from colleagues, and carry it into your review.',
   },
   {
     illustration: '/illustrations/growth.svg',
-    gradient: 'var(--grad-company)',
-    tag: '\uD83D\uDCC8 Track progress',
-    title: 'See your growth',
-    body: 'Log check-ins on every goal and watch progress build through the year, with clear 1 to 4 appraisals at review time.',
-  },
-  {
-    illustration: '/illustrations/calendar.svg',
     gradient: 'var(--grad-financial)',
-    tag: '\uD83D\uDDD3\uFE0F Stay on cycle',
-    title: 'Never miss a milestone',
-    body: 'Cycle reminders, calendar sync and gentle nudges keep goal setting and reviews on track across every Oxygene team, pressure free.',
+    tag: '\uD83C\uDF31 Keep growing',
+    title: 'A continuous journey',
+    body: 'Performance management is ongoing, not once a year. Review goals, document achievements and keep developing. Tap the help button any time to re-open this guide.',
   },
 ];
 
