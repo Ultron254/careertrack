@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useReviewQueue } from '@/api/queries/reviews';
 import { useAuth } from '@/auth/authProvider';
 import { pageMetaFor } from '@/app/pageMeta';
+import { EmployeeGuide } from '@/features/onboarding/EmployeeGuide';
 import { GuidedTour } from '@/features/onboarding/GuidedTour';
 import { CommandPalette } from './CommandPalette';
 import { Sidebar } from './Sidebar';
@@ -18,6 +19,7 @@ export function DesktopShell() {
   const [collapsed, setCollapsed] = useState(compact);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [tourRunning, setTourRunning] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
 
   useEffect(() => setCollapsed(compact), [compact]);
 
@@ -64,15 +66,26 @@ export function DesktopShell() {
 
       {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} />}
 
+      {/* For employees the help button opens the guide, which in turn can hand
+          off to the guided tour. Other roles go straight to the tour. */}
       <button
         type="button"
         className={styles.tourButton}
-        title="Take a tour"
-        aria-label="Take a tour"
-        onClick={() => setTourRunning(true)}
+        title={role === 'employee' ? 'Open the employee guide' : 'Take a tour'}
+        aria-label={role === 'employee' ? 'Open the employee guide' : 'Take a tour'}
+        onClick={() => (role === 'employee' ? setGuideOpen(true) : setTourRunning(true))}
       >
         ?
       </button>
+      {guideOpen && (
+        <EmployeeGuide
+          onClose={() => setGuideOpen(false)}
+          onStartTour={() => {
+            setGuideOpen(false);
+            setTourRunning(true);
+          }}
+        />
+      )}
       {tourRunning && (
         <GuidedTour
           onExpandSidebar={() => setCollapsed(false)}
