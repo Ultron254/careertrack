@@ -117,21 +117,26 @@ function hashId(id: string): number {
 export interface GoalContext {
   selfRating: Rating;
   selfComment: string;
-  peer: { name: string; dept: string; quote: string; rating: Rating };
+  // Advisory peer input only exists where a peer actually commented, so this
+  // is null on the goals nobody weighed in on.
+  peer: { name: string; dept: string; quote: string; rating: Rating } | null;
 }
 
 export function goalContext(goalId: string): GoalContext {
   const h = hashId(goalId);
   const selfRating = (((h >>> 2) % 3) + 2) as Rating; // 2..4, people rate themselves kindly
   const peerRating = clampRating(selfRating + ((h >>> 5) % 3) - 1);
+  const hasPeer = (h >>> 2) % 2 === 0; // roughly half the goals attract a peer comment
   return {
     selfRating,
     selfComment: 'Delivered against this consistently and kept stakeholders informed throughout.',
-    peer: {
-      ...peerPool[h % peerPool.length],
-      quote: peerQuotes[(h >>> 4) % peerQuotes.length],
-      rating: peerRating,
-    },
+    peer: hasPeer
+      ? {
+          ...peerPool[h % peerPool.length],
+          quote: peerQuotes[(h >>> 4) % peerQuotes.length],
+          rating: peerRating,
+        }
+      : null,
   };
 }
 

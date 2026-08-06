@@ -16,8 +16,8 @@ import type { FinalRating, Rating, TeamAppraisal, User } from '@/types/domain';
 import { EmployeeSelfStage } from './EmployeeSelfStage';
 import {
   EmployeeDiscussion,
-  EmployeeSignOff,
   LockedRecord,
+  SignOffPanel,
   WaitingOnManager,
   type SignerParty,
 } from './EmployeeStages';
@@ -397,12 +397,14 @@ function CycleBody({
       )}
 
       {stage === 'Acknowledge' && (
-        <EmployeeSignOff
+        <SignOffPanel
           parties={parties}
           goalCount={goals.length}
           signatures={signatures}
           signing={sign.isPending}
-          onSignSelf={() => signAs('employee')}
+          signerKey="employee"
+          signLabel="Sign as you"
+          onSign={() => signAs('employee')}
         />
       )}
 

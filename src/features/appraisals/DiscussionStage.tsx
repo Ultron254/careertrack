@@ -9,16 +9,18 @@ const scale: Rating[] = [1, 2, 3, 4];
 
 // The alignment discussion: manager and report agree a final number per goal,
 // or flag it for People Team mediation. Everything locks before sign-off.
+// Proposals travel both ways — the report can put a number forward for the
+// manager to agree, and vice versa.
 export function DiscussionStage({
   goals,
   contextOf,
   first,
   managerRatings,
   finals,
+  proposedByReport,
   onPropose,
   onAgree,
   onFlag,
-  onResolve,
   onReopen,
   onAdvance,
 }: {
@@ -27,10 +29,10 @@ export function DiscussionStage({
   first: string;
   managerRatings: Record<string, Rating>;
   finals: Record<string, FinalRating>;
+  proposedByReport: (goalId: string) => boolean;
   onPropose: (goalId: string, rating: Rating) => void;
   onAgree: (goalId: string) => void;
   onFlag: (goalId: string) => void;
-  onResolve: (goalId: string) => void;
   onReopen: (goalId: string) => void;
   onAdvance: () => void;
 }) {
@@ -43,12 +45,18 @@ export function DiscussionStage({
 
   return (
     <>
-      <div className={`${styles.notice} ${flaggedCount ? styles.noticeFlag : ''}`}>
-        <Icon name={flaggedCount ? 'info' : 'chat'} size={16} />
+      <div
+        className={`${styles.notice} ${
+          flaggedCount ? styles.noticeFlag : allLocked ? styles.noticeAgreed : ''
+        }`}
+      >
+        <Icon name={flaggedCount ? 'info' : allLocked ? 'check' : 'chat'} size={16} />
         <span>
           {flaggedCount
             ? 'A goal is flagged for People Team mediation. It must be resolved before this appraisal can move on.'
-            : `Work through each goal together. You and ${first} both confirm a final number before it locks.`}
+            : allLocked
+              ? 'All goals are agreed. Move to acknowledgement to collect signatures.'
+              : `Work through each goal together. You and ${first} both confirm a final number before it locks.`}
         </span>
       </div>
       <div className={styles.sections}>
@@ -57,6 +65,8 @@ export function DiscussionStage({
           const state = finalOf(finals, goal.id);
           const self = ctx.selfRating;
           const manager = managerRatings[goal.id] ?? ctx.selfRating;
+          const fromReport = state.status === 'proposed' && proposedByReport(goal.id);
+          const settled = state.status === 'locked' || state.status === 'resolved';
           return (
             <GoalCard key={goal.id} goal={goal}>
               <div className={styles.discussRow}>
@@ -67,13 +77,12 @@ export function DiscussionStage({
                 <div className={styles.finalScale}>
                   {scale.map((n) => {
                     const on = state.value === n;
-                    const locked = state.status === 'locked' || state.status === 'resolved';
                     return (
                       <button
                         key={n}
                         type="button"
                         className={styles.finalButton}
-                        disabled={locked}
+                        disabled={settled || state.status === 'flagged'}
                         onClick={() => onPropose(goal.id, n)}
                         style={
                           on
@@ -92,12 +101,22 @@ export function DiscussionStage({
                   })}
                 </div>
                 {state.status === 'open' && <span className={styles.statePill}>No proposal yet</span>}
-                {(state.status === 'locked' || state.status === 'resolved') && (
+                {state.status === 'proposed' && (
+                  <span className={`${styles.statePill} ${styles.statePillWaiting}`}>
+                    {fromReport ? `${first} proposed ${state.value}` : `Awaiting ${first}`}
+                  </span>
+                )}
+                {state.status === 'locked' && (
                   <span className={`${styles.statePill} ${styles.statePillLocked}`}>✓ Locked</span>
+                )}
+                {state.status === 'resolved' && (
+                  <span className={`${styles.statePill} ${styles.statePillResolved}`}>
+                    Resolved by People Team
+                  </span>
                 )}
                 {state.status === 'flagged' && (
                   <span className={`${styles.statePill} ${styles.statePillFlagged}`}>
-                    Flagged · People Team
+                    🚩 Flagged · People Team
                   </span>
                 )}
               </div>
@@ -107,44 +126,49 @@ export function DiscussionStage({
                   Propose a final rating for {first} to agree.
                 </div>
               )}
-              {state.status === 'proposed' && (
-                <>
-                  <div className={styles.discussHint}>
-                    {first} proposed {self}. Agree, counter-propose, or flag.
-                  </div>
-                  <div className={styles.discussActions}>
-                    <button
-                      type="button"
-                      className={styles.agreeButton}
-                      onClick={() => onAgree(goal.id)}
-                    >
-                      ✓ Agree on {state.value}
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.flagButton}
-                      onClick={() => onFlag(goal.id)}
-                    >
-                      🚩 Flag to People Team
-                    </button>
-                  </div>
-                </>
-              )}
+              {state.status === 'proposed' &&
+                (fromReport ? (
+                  <>
+                    <div className={styles.discussHint}>
+                      {first} proposed {state.value}. Agree, counter-propose, or flag.
+                    </div>
+                    <div className={styles.discussActions}>
+                      <button
+                        type="button"
+                        className={styles.agreeButton}
+                        onClick={() => onAgree(goal.id)}
+                      >
+                        ✓ Agree on {state.value}
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.flagButton}
+                        onClick={() => onFlag(goal.id)}
+                      >
+                        🚩 Flag to People Team
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={styles.discussHint}>
+                      You proposed {state.value}. Waiting for {first} to agree.
+                    </div>
+                    <div className={styles.discussActions}>
+                      <button
+                        type="button"
+                        className={styles.flagButton}
+                        onClick={() => onFlag(goal.id)}
+                      >
+                        🚩 Flag to People Team
+                      </button>
+                    </div>
+                  </>
+                ))}
               {state.status === 'flagged' && (
-                <>
-                  <div className={styles.discussHint}>
-                    Waiting on the People Team to mediate and set a final rating.
-                  </div>
-                  <div className={styles.discussActions}>
-                    <button
-                      type="button"
-                      className={styles.ghostButton}
-                      onClick={() => onResolve(goal.id)}
-                    >
-                      Simulate People Team resolution
-                    </button>
-                  </div>
-                </>
+                <div className={styles.discussHint} style={{ margin: 0 }}>
+                  Sent to the People Team to mediate.
+                </div>
               )}
               {state.status === 'locked' && (
                 <div className={styles.discussActions}>

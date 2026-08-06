@@ -261,20 +261,24 @@ export function EmployeeDiscussion({
   );
 }
 
-// Three-party sign-off from the employee's side: they sign first, then watch
-// the line manager and People Team countersign to lock the record.
-export function EmployeeSignOff({
+// Three-party sign-off tiles. The current viewer gets the live button; the
+// other parties' signatures arrive from their own side of the cycle.
+export function SignOffPanel({
   parties,
   goalCount,
   signatures,
   signing,
-  onSignSelf,
+  signerKey,
+  signLabel,
+  onSign,
 }: {
   parties: SignerParty[];
   goalCount: number;
   signatures: Signatures;
   signing: boolean;
-  onSignSelf: () => void;
+  signerKey: SignaturePartyInput;
+  signLabel: string;
+  onSign: () => void;
 }) {
   return (
     <div className={`card ${styles.blockCard}`}>
@@ -286,12 +290,12 @@ export function EmployeeSignOff({
       <div className={styles.signGrid}>
         {parties.map((party) => {
           const signedAt = signatures[party.key];
-          const isSelf = party.key === 'employee';
+          const isSigner = party.key === signerKey;
           return (
             <div
               key={party.key}
               className={`${styles.signTile} ${
-                signedAt ? styles.signTileDone : isSelf ? styles.signTileActive : ''
+                signedAt ? styles.signTileDone : isSigner ? styles.signTileActive : ''
               }`}
             >
               <Avatar
@@ -306,14 +310,14 @@ export function EmployeeSignOff({
                 <span className={styles.signedPill}>
                   <Icon name="check" size={14} /> Signed {'\u00b7'} {signedWhen(signedAt)}
                 </span>
-              ) : isSelf ? (
+              ) : isSigner ? (
                 <button
                   type="button"
                   className={shared.signButton}
                   disabled={signing}
-                  onClick={onSignSelf}
+                  onClick={onSign}
                 >
-                  Sign as you
+                  {signLabel}
                 </button>
               ) : (
                 <span className={styles.awaitingPill}>Awaiting signature</span>

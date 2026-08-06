@@ -161,34 +161,37 @@ export function ManagerRatingStage({
                       );
                     })}
                   </div>
-                  <label className={styles.evidenceLabel} htmlFor={`evidence-${goal.id}`}>
-                    Evidence for your rating — specific examples
-                  </label>
                   <textarea
-                    id={`evidence-${goal.id}`}
                     className={styles.textarea}
                     rows={2}
                     value={evidence[goal.id] ?? ''}
                     onChange={(event) => onEvidence(goal.id, event.target.value)}
-                    placeholder="What did you see that supports this rating?"
+                    placeholder="Evidence for your rating — specific examples…"
+                    aria-label={`Evidence for your rating of ${goal.title}`}
+                    style={{ marginTop: 12 }}
                   />
                 </div>
               </div>
 
-              <div className={styles.peer}>
-                <Avatar userId={`peer-${goal.id}`} name={ctx.peer.name} size={34} />
-                <div className={styles.peerBody}>
-                  <div className={styles.peerTop}>
-                    <span className={styles.peerTag}>Peer input · advisory</span>
-                    <span className={styles.peerName}>{ctx.peer.name}</span>
-                    <span className={styles.peerDept}>{ctx.peer.dept}</span>
+              {ctx.peer && (
+                <div className={styles.peer}>
+                  <Avatar userId={`peer-${goal.id}`} name={ctx.peer.name} size={34} />
+                  <div className={styles.peerBody}>
+                    <div className={styles.peerTop}>
+                      <span className={styles.peerTag}>Peer input · advisory</span>
+                      <span className={styles.peerName}>{ctx.peer.name}</span>
+                      <span className={styles.peerDept}>{ctx.peer.dept}</span>
+                    </div>
+                    <div className={styles.peerQuote}>&ldquo;{ctx.peer.quote}&rdquo;</div>
                   </div>
-                  <div className={styles.peerQuote}>&ldquo;{ctx.peer.quote}&rdquo;</div>
+                  <span
+                    className={styles.peerRating}
+                    style={{ color: ratingColour[ctx.peer.rating] }}
+                  >
+                    {ctx.peer.rating}
+                  </span>
                 </div>
-                <span className={styles.peerRating} style={{ color: ratingColour[ctx.peer.rating] }}>
-                  {ctx.peer.rating}
-                </span>
-              </div>
+              )}
             </GoalCard>
           );
         })}

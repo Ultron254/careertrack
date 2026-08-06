@@ -126,26 +126,6 @@
   opacity: 0.85;
   margin-top: 4px;
 }
-.key {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
-}
-.keyChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 12px;
-  border-radius: var(--radius-pill);
-  background: rgba(var(--white-rgb), 0.13);
-  border: 1px solid rgba(var(--white-rgb), 0.22);
-  font-size: 12.5px;
-}
-.keyNum {
-  font-family: var(--font-display);
-  font-weight: 800;
-}
 
 /* Demo control that walks the whole cycle stage by stage, mirroring the
    People Team calibration toggle. Prototype affordance only. */
@@ -254,6 +234,11 @@
   background: rgba(var(--orange-rgb), 0.1);
   border-color: rgba(var(--orange-rgb), 0.35);
   color: var(--text-soft);
+}
+.noticeAgreed {
+  background: rgba(var(--teal-rgb), 0.1);
+  border-color: rgba(var(--teal-rgb), 0.35);
+  color: var(--teal);
 }
 
 .sections {
@@ -473,6 +458,14 @@
   background: rgba(var(--teal-rgb), 0.14);
   color: var(--teal);
 }
+.statePillWaiting {
+  background: rgba(var(--gold-rgb), 0.16);
+  color: var(--gold);
+}
+.statePillResolved {
+  background: rgba(var(--blue-rgb), 0.12);
+  color: var(--blue);
+}
 .statePillFlagged {
   background: rgba(var(--orange-rgb), 0.14);
   color: var(--orange);
@@ -518,49 +511,8 @@
   cursor: pointer;
 }
 
-/* Acknowledge stage — signatures. */
-.signList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.signCard {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 20px;
-  border-radius: 16px;
-  border: 1.5px solid var(--border);
-  background: var(--surface);
-}
-.signCardActive {
-  border-color: var(--teal);
-  box-shadow: 0 6px 20px rgba(var(--teal-rgb), 0.12);
-}
-.signCardDone {
-  border-color: rgba(var(--teal-rgb), 0.4);
-  background: var(--tint-client);
-}
-.signBody {
-  flex: 1;
-}
-.signName {
-  font-weight: 700;
-  font-size: 15px;
-}
-.signRole {
-  font-size: 12.5px;
-  color: var(--text-muted);
-}
-.signState {
-  flex: none;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--teal);
-}
+/* Acknowledge stage — the "sign as manager" action on the shared sign-off
+   tiles; the tile layout itself lives in Appraisal.module.css. */
 .signButton {
   flex: none;
   padding: 11px 20px;
@@ -575,11 +527,6 @@
 .signButton:disabled {
   background: var(--text-muted);
   cursor: not-allowed;
-}
-.signWaiting {
-  flex: none;
-  font-size: 12.5px;
-  color: var(--text-muted);
 }
 
 /* Footer action bar shared across stages. */

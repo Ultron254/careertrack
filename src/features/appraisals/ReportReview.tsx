@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useCycles, useGoals } from '@/api/queries/goals';
 import { useUsers } from '@/api/queries/org';
 import {
@@ -11,12 +11,13 @@ import { Icon } from '@/components/icons/Icon';
 import { Avatar } from '@/components/ui/Avatar';
 import { ErrorState } from '@/components/ui/States';
 import { ViewSkeleton } from '@/components/ui/Skeleton';
-import { categoryOrder, ratingLabels } from '@/components/ui/accent';
+import { categoryOrder, ratingColour, ratingLabels } from '@/components/ui/accent';
 import type { FinalRating, Goal, Rating, TeamAppraisal, User } from '@/types/domain';
 import { DiscussionStage } from './DiscussionStage';
 import { ManagerRatingStage, SelfContext } from './ManagerRatingStage';
-import { Acknowledgement, DoneCard } from './SignOffStage';
+import { LockedRecord, SignOffPanel, type SignerParty } from './EmployeeStages';
 import {
+  demoManagerRating,
   finalOf,
   firstNameOf,
   fromServerStage,
@@ -29,6 +30,7 @@ import {
   type Stage,
 } from './reviewModel';
 import styles from './ManagerAppraisal.module.css';
+import emp from './Appraisal.module.css';
 
 const scale: Rating[] = [1, 2, 3, 4];
 
@@ -110,6 +112,31 @@ function ReviewBody({
   const [overallComment, setOverallComment] = useState(record.overallComment);
   const [finals, setFinals] = useState(record.finals);
   const [signatures, setSignatures] = useState(record.signatures);
+  // Which pending proposals came from the report rather than from you.
+  const [reportProposed, setReportProposed] = useState<Set<string>>(new Set());
+
+  // Mirrors so the demo timers below always read the live values rather than
+  // the state captured when they were scheduled.
+  const stageRef = useRef(stage);
+  stageRef.current = stage;
+  const ratingsRef = useRef(managerRatings);
+  ratingsRef.current = managerRatings;
+  const evidenceRef = useRef(evidence);
+  evidenceRef.current = evidence;
+  const commentRef = useRef(overallComment);
+  commentRef.current = overallComment;
+  const finalsRef = useRef(finals);
+  finalsRef.current = finals;
+  const signaturesRef = useRef(signatures);
+  signaturesRef.current = signatures;
+
+  // Timed demo responses that stand in for the report and the People Team
+  // answering from their own seats until the real backend pushes updates.
+  const timers = useRef<number[]>([]);
+  useEffect(() => () => timers.current.forEach((id) => window.clearTimeout(id)), []);
+  const later = (ms: number, run: () => void) => {
+    timers.current.push(window.setTimeout(run, ms));
+  };
 
   const first = firstNameOf(report.name);
   const contextOf = (goalId: string) => goalContext(goalId);
@@ -126,27 +153,41 @@ function ReviewBody({
   }) => {
     save.mutate(
       {
-        stage: toServerStage(patch.stage ?? stage),
-        managerRatings: patch.managerRatings ?? managerRatings,
-        evidence: patch.evidence ?? evidence,
-        overallComment: patch.overallComment ?? overallComment,
-        finals: patch.finals ?? finals,
+        stage: toServerStage(patch.stage ?? stageRef.current),
+        managerRatings: patch.managerRatings ?? ratingsRef.current,
+        evidence: patch.evidence ?? evidenceRef.current,
+        overallComment: patch.overallComment ?? commentRef.current,
+        finals: patch.finals ?? finalsRef.current,
       },
       { onSuccess: (saved) => setSignatures(saved.signatures) },
     );
   };
 
   const goToStage = (next: Stage) => {
+    // Jumping ahead with the demo tabs past the rating stage needs manager
+    // numbers on the board, so seed the stable stand-ins where none exist.
+    if ((next === 'Discussion' || next === 'Acknowledge' || next === 'Done') &&
+        Object.keys(ratingsRef.current).length === 0) {
+      const seeded: Record<string, Rating> = {};
+      for (const goal of goals) seeded[goal.id] = demoManagerRating(goal.id, selfOf(goal.id));
+      setManagerRatings(seeded);
+      setStage(next);
+      persist({ stage: next, managerRatings: seeded });
+      return;
+    }
     setStage(next);
     persist({ stage: next });
   };
 
   const reset = () => {
+    timers.current.forEach((id) => window.clearTimeout(id));
+    timers.current = [];
     setStage('Manager');
     setManagerRatings({});
     setEvidence({});
     setOverallComment('');
     setFinals({});
+    setReportProposed(new Set());
     persist({
       stage: 'Manager',
       managerRatings: {},
@@ -163,38 +204,134 @@ function ReviewBody({
   };
 
   const setFinal = (goalId: string, final: FinalRating) => {
-    const next = { ...finals, [goalId]: final };
+    const next = { ...finalsRef.current, [goalId]: final };
     setFinals(next);
     persist({ finals: next });
   };
 
-  const proposeFinal = (goalId: string, rating: Rating) =>
+  const dropReportProposal = (goalId: string) =>
+    setReportProposed((prev) => {
+      if (!prev.has(goalId)) return prev;
+      const next = new Set(prev);
+      next.delete(goalId);
+      return next;
+    });
+
+  // You propose (or counter-propose) a number; in this demo the report comes
+  // around after a moment unless the goal moved on in the meantime.
+  const proposeFinal = (goalId: string, rating: Rating) => {
+    dropReportProposal(goalId);
     setFinal(goalId, { value: rating, status: 'proposed' });
-  const agreeFinal = (goalId: string) =>
-    setFinal(goalId, { value: finalOf(finals, goalId).value, status: 'locked' });
-  const flagFinal = (goalId: string) =>
-    setFinal(goalId, { value: finalOf(finals, goalId).value, status: 'flagged' });
-  const resolveFinal = (goalId: string) => {
-    const ctx = contextOf(goalId);
-    setFinal(goalId, {
-      value: resolveMidpoint(finalOf(finals, goalId).value, ctx.selfRating, ctx.peer.rating),
-      status: 'resolved',
+    later(2400, () => {
+      const pending = finalOf(finalsRef.current, goalId);
+      if (pending.status === 'proposed' && pending.value === rating) {
+        setFinal(goalId, { value: rating, status: 'locked' });
+      }
     });
   };
-  const reopenFinal = (goalId: string) => setFinal(goalId, { value: null, status: 'open' });
+
+  const agreeFinal = (goalId: string) => {
+    dropReportProposal(goalId);
+    setFinal(goalId, { value: finalOf(finalsRef.current, goalId).value, status: 'locked' });
+  };
+
+  // Flagging hands the goal to the People Team, who mediate a midpoint after
+  // a moment — a stand-in for their real round-trip.
+  const flagFinal = (goalId: string) => {
+    dropReportProposal(goalId);
+    const pending = finalOf(finalsRef.current, goalId);
+    setFinal(goalId, { value: pending.value, status: 'flagged' });
+    later(3200, () => {
+      const state = finalOf(finalsRef.current, goalId);
+      if (state.status !== 'flagged') return;
+      const ctx = contextOf(goalId);
+      const counterpart = ctx.peer?.rating ?? ratingsRef.current[goalId] ?? ctx.selfRating;
+      setFinal(goalId, {
+        value: resolveMidpoint(state.value, ctx.selfRating, counterpart),
+        status: 'resolved',
+      });
+    });
+  };
+
+  const reopenFinal = (goalId: string) => {
+    dropReportProposal(goalId);
+    setFinal(goalId, { value: null, status: 'open' });
+  };
 
   const handleSign = (party: SignaturePartyInput) => {
     sign.mutate(party, {
       onSuccess: (signed) => {
         setSignatures(signed.signatures);
-        if (signed.stage === 'done') setStage('Done');
+        if (signed.stage === 'done') {
+          setStage('Done');
+          return;
+        }
+        // With the employee and manager in, the People Team countersigns and
+        // locks the record after a beat.
+        if (
+          signed.signatures.employee &&
+          signed.signatures.manager &&
+          !signed.signatures.people_team
+        ) {
+          later(1800, () => {
+            if (!signaturesRef.current.people_team) handleSign('people_team');
+          });
+        }
       },
     });
   };
 
+  // Once the discussion opens, the report starts proposing numbers for any
+  // goal still untouched — staggered so it reads like a real back-and-forth.
+  useEffect(() => {
+    if (stage !== 'Discussion') return;
+    goals.forEach((goal, index) => {
+      later(2600 + index * 1300, () => {
+        if (stageRef.current !== 'Discussion') return;
+        if (finalOf(finalsRef.current, goal.id).status !== 'open') return;
+        const self = selfOf(goal.id);
+        const managerRating = ratingsRef.current[goal.id] ?? self;
+        setReportProposed((prev) => new Set(prev).add(goal.id));
+        setFinal(goal.id, {
+          value: resolveMidpoint(null, self, managerRating),
+          status: 'proposed',
+        });
+      });
+    });
+    // The timers read live state through the refs; re-running on other
+    // changes would double-book the report's replies.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
+
+  // The report signs from their own seat shortly after the sign-off opens.
+  useEffect(() => {
+    if (stage !== 'Acknowledge') return;
+    if (signaturesRef.current.employee) return;
+    later(2200, () => {
+      if (stageRef.current !== 'Acknowledge') return;
+      if (!signaturesRef.current.employee) handleSign('employee');
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
+
+  const parties: SignerParty[] = [
+    { key: 'employee', person: report, fallbackName: report.name, role: 'Employee' },
+    { key: 'manager', person: manager, fallbackName: 'Line manager', role: 'Line Manager' },
+    {
+      key: 'people_team',
+      person: peopleTeam,
+      fallbackName: 'People Team',
+      role: 'People Team · locks record',
+    },
+  ];
+
   const stepper = [
     { title: 'Self-appraisal', hint: first, done: true },
-    { title: 'Line manager', hint: 'You', done: stage !== 'Manager' && stage !== 'Self' },
+    {
+      title: 'Line manager',
+      hint: manager ? firstNameOf(manager.name) : 'You',
+      done: stage !== 'Manager' && stage !== 'Self',
+    },
     { title: 'Final discussion', hint: 'Align', done: stage === 'Acknowledge' || stage === 'Done' },
     { title: 'Acknowledge', hint: 'Sign off', done: stage === 'Done' },
   ];
@@ -260,6 +397,19 @@ function ReviewBody({
         })}
       </div>
 
+      {(stage === 'Self' || stage === 'Manager') && (
+        <div className={emp.keyRow}>
+          {scale.map((n) => (
+            <span key={n} className={emp.keyItem}>
+              <span className={emp.keyItemNum} style={{ background: ratingColour[n] }}>
+                {n}
+              </span>
+              {ratingLabels[n]}
+            </span>
+          ))}
+        </div>
+      )}
+
       {stage === 'Self' && <SelfContext goals={goals} contextOf={contextOf} first={first} />}
 
       {stage === 'Manager' && (
@@ -284,28 +434,36 @@ function ReviewBody({
           first={first}
           managerRatings={managerRatings}
           finals={finals}
+          proposedByReport={(goalId) => reportProposed.has(goalId)}
           onPropose={proposeFinal}
           onAgree={agreeFinal}
           onFlag={flagFinal}
-          onResolve={resolveFinal}
           onReopen={reopenFinal}
           onAdvance={() => goToStage('Acknowledge')}
         />
       )}
 
       {stage === 'Acknowledge' && (
-        <Acknowledgement
-          report={report}
-          first={first}
-          manager={manager}
-          peopleTeam={peopleTeam}
+        <SignOffPanel
+          parties={parties}
+          goalCount={goals.length}
           signatures={signatures}
           signing={sign.isPending}
-          onSign={handleSign}
+          signerKey="manager"
+          signLabel="Sign as manager"
+          onSign={() => handleSign('manager')}
         />
       )}
 
-      {stage === 'Done' && <DoneCard report={report} first={first} year={year} projected={projected} />}
+      {stage === 'Done' && (
+        <LockedRecord
+          name={first}
+          year={year}
+          final={projected}
+          parties={parties}
+          signatures={signatures}
+        />
+      )}
     </>
   );
 }
@@ -337,46 +495,36 @@ function Banner({
     Discussion: {
       kicker: `Final discussion · ${year}`,
       title: 'Align on the final rating',
-      sub: `Compare self and manager ratings for each goal and agree a final number together. You both confirm before a goal locks.`,
+      sub: `Compare self and manager ratings for each goal and agree a final number together. Both of you confirm before a goal locks.`,
     },
     Acknowledge: {
       kicker: `Acknowledgement · ${year}`,
-      title: 'Sign off the aligned appraisal',
-      sub: 'Each party signs to confirm the discussion took place and the ratings are agreed. The People Team signs last to lock the record.',
+      title: 'Sign off the appraisal',
+      sub: 'All goals are aligned. Employee, line manager and People Team each sign to complete the record.',
     },
     Done: {
       kicker: `Complete · ${year}`,
       title: 'Appraisal locked',
-      sub: `${report.name}'s ${year} appraisal is signed and locked.`,
+      sub: 'This appraisal is signed by all parties and locked.',
     },
   };
-  const showScore = stage === 'Discussion' || stage === 'Acknowledge' || stage === 'Done';
+  const showScore =
+    (stage === 'Discussion' || stage === 'Acknowledge' || stage === 'Done') && projected > 0;
   const current = copy[stage];
   return (
     <div className={`grain ${styles.banner}`}>
+      <div className={styles.bannerFace}>
+        <Avatar userId={report.id} name={report.name} avatarUrl={report.avatarUrl} size={64} />
+      </div>
       <div className={styles.bannerBody}>
         <div className={styles.bannerKicker}>{current.kicker}</div>
         <h1 className={styles.bannerTitle}>{current.title}</h1>
         <p className={styles.bannerSub}>{current.sub}</p>
-        {stage === 'Manager' && (
-          <div className={styles.key}>
-            {scale.map((n) => (
-              <span key={n} className={styles.keyChip}>
-                <span className={styles.keyNum}>{n}</span>
-                {ratingLabels[n]}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
-      {showScore && projected > 0 ? (
+      {showScore && (
         <div className={styles.projected}>
           <div className={styles.projectedNum}>{projected.toFixed(1)}</div>
           <div className={styles.projectedTag}>{stage === 'Done' ? 'Final' : 'Projected'}</div>
-        </div>
-      ) : (
-        <div className={styles.bannerFace}>
-          <Avatar userId={report.id} name={report.name} avatarUrl={report.avatarUrl} size={64} />
         </div>
       )}
     </div>
