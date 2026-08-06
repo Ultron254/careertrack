@@ -53,6 +53,7 @@ Vite 8, React 19 with the React Compiler, TypeScript in strict mode, Tailwind CS
 
 ## Documentation
 
+- [What changed](docs/changes.md): the August 2026 restructure — what moved, why, and where to look.
 - [Handover](docs/handover.md): how the Laravel + Inertia swap works, how to run, the folder map, routing and role guards, auth, and how to add a screen.
 - [API contract](docs/api-contract.md): every action and page's shapes, and the enums, for the backend developer.
 - [Decisions](docs/decisions.md): the non obvious calls and anything deferred.
